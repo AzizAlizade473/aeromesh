@@ -139,61 +139,63 @@ export default function Hero() {
             {/* ── BUTTONS — side by side, identical height ── */}
             {/* They must render side by side on desktop using flexDirection: row */}
             <motion.div
+              className="hero-ctas"
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...TRANSITION, delay: 1 }}
               style={{
                 display: 'flex',
-                flexDirection: 'row',         // ← MUST be row, not column
-                alignItems: 'stretch',        // ← forces equal height
-                gap: 12,
-                marginBottom: 32,
+                gap: '12px',
                 flexWrap: 'wrap',
+                alignItems: 'stretch',
+                marginBottom: '32px'
               }}
             >
-              <button
-                onClick={() => {
-                  const el = document.getElementById('problem')
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-                style={{
-                  padding: '12px 28px',                    // ← same padding as second button
-                  background: 'var(--primary)',
-                  color: 'white',
-                  border: '2px solid var(--primary)',      // ← same border width as second button
-                  borderRadius: 6,                          // ← same borderRadius as second button
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',                       // ← same fontSize as second button
+              <motion.button 
+                onClick={() => scrollTo('problem')} 
+                whileHover={{ scale: 1.03 }} 
+                whileTap={{ scale: 0.98 }}
+                style={{ 
+                  padding: '12px 28px', 
+                  border: 'none', 
+                  background: 'linear-gradient(135deg, var(--color-primary, #00A3FF), var(--color-primary-700, #0078c9))', 
+                  color: 'white', 
+                  fontFamily: 'var(--font-display)', 
+                  fontSize: '0.9rem', 
+                  fontWeight: 700, 
+                  borderRadius: 'var(--radius-md)', 
+                  boxShadow: 'var(--shadow-sm)',
                   cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  lineHeight: 1,                            // ← same lineHeight as second button
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: '48px'
                 }}
               >
                 ▶ How It Works
-              </button>
-
-              <button
-                onClick={() => {
-                  const el = document.getElementById('dashboard')
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-                style={{
-                  padding: '12px 28px',                    // ← IDENTICAL to first button
-                  background: 'transparent',
-                  color: 'white',
-                  border: '2px solid rgba(255,255,255,0.45)', // ← same border width
-                  borderRadius: 6,                           // ← IDENTICAL
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',                        // ← IDENTICAL
+              </motion.button>
+              <motion.button 
+                onClick={() => scrollTo('dashboard')} 
+                whileHover={{ scale: 1.03 }} 
+                whileTap={{ scale: 0.98 }}
+                style={{ 
+                  padding: '12px 28px', 
+                  border: '1px solid rgba(255,255,255,0.2)', 
+                  background: 'transparent', 
+                  color: 'white', 
+                  fontFamily: 'var(--font-display)', 
+                  fontSize: '0.9rem', 
+                  fontWeight: 600, 
+                  borderRadius: 'var(--radius-md)',
                   cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  lineHeight: 1,                             // ← IDENTICAL
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: '48px'
                 }}
               >
                 Live Dashboard
-              </button>
+              </motion.button>
             </motion.div>
 
             {/* ── STAT PILLS — three in a row, equal width ── */}
@@ -324,8 +326,10 @@ export default function Hero() {
 
       <style>{`
         @media (min-width: 992px) {
-          .hero-grid { grid-template-columns: 1fr 1fr !important; }
+          .hero-grid { grid-template-columns: 1fr 480px !important; }
         }
+        .hero-ctas button { min-inline-size: 120px; border-radius: var(--radius-md) !important; }
+        .hero-ctas button:focus-visible { outline: 3px solid var(--color-primary, #00A3FF); outline-offset: 2px; }
       `}</style>
     </section>
   );
