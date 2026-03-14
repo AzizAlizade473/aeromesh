@@ -151,11 +151,12 @@ export default function BakuMap() {
 
   useEffect(() => {
     const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
+    
+    // Fetch specifically the major bus routes in Baku to keep payload size manageable
     const query = `
-      [out:json][timeout:30];
+      [out:json][timeout:25];
       (
-        relation["type"="route"]["route"="bus"]
-          (40.30,49.70,40.60,50.15);
+        relation["type"="route"]["route"="bus"]["ref"~"^(1|2|44|65|88|H1|125)$"](40.30,49.70,40.60,50.15);
       );
       out body;
       >;
@@ -181,37 +182,59 @@ export default function BakuMap() {
             ways[w.id] = w.nodes.map(nid => nodes[nid]).filter(Boolean);
           });
 
-        const ROUTE_COLORS = ['#1B4F8A','#C62828','#2E7D32','#E65100','#6A1B9A','#00838F','#1565C0','#AD1457','#F57F17','#37474F'];
+        const ROUTE_COLORS = ['#1B4F8A','#C62828','#2E7D32','#E65100','#6A1B9A','#00838F','#1565C0','#AD1457'];
 
         const routes = data.elements
           .filter(e => e.type === 'relation' && e.tags?.route === 'bus')
-          .slice(0, 10)
           .map((rel, i) => {
+            const wayIds = (rel.members || [])
+              .filter(m => m.type === 'way' && (m.role === '' || m.role === 'forward'))
+              .map(m => m.ref);
+            
+            // Stitch ways together end-to-end for a continuous polyline
             const coords = [];
-            (rel.members || [])
-              .filter(m => m.type === 'way')
-              .forEach(m => {
-                const wCoords = ways[m.ref] || [];
-                coords.push(...wCoords);
-              });
+            if (wayIds.length > 0) {
+                const firstWay = ways[wayIds[0]] || [];
+                coords.push(...firstWay);
+                
+                let lastPoint = coords[coords.length - 1];
+                for (let j = 1; j < wayIds.length; j++) {
+                    const currentWay = ways[wayIds[j]] || [];
+                    if (currentWay.length === 0) continue;
+                    
+                    const distToStart = Math.pow(currentWay[0][0] - lastPoint[0], 2) + Math.pow(currentWay[0][1] - lastPoint[1], 2);
+                    const distToEnd = Math.pow(currentWay[currentWay.length-1][0] - lastPoint[0], 2) + Math.pow(currentWay[currentWay.length-1][1] - lastPoint[1], 2);
+                    
+                    if (distToEnd < distToStart) {
+                        coords.push(...currentWay.slice().reverse());
+                    } else {
+                        coords.push(...currentWay);
+                    }
+                    lastPoint = coords[coords.length - 1];
+                }
+            }
 
             return {
               id:        rel.id,
-              number:    rel.tags?.ref || rel.tags?.name || `Route ${i+1}`,
-              name:      rel.tags?.name || (rel.tags?.from && rel.tags?.to
-                           ? `${rel.tags.from} → ${rel.tags.to}`
-                           : `Bus Route ${rel.tags?.ref || i+1}`),
+              number:    rel.tags?.ref || `${i+1}`,
+              name:      rel.tags?.name || (rel.tags?.from && rel.tags?.to ? `${rel.tags.from} → ${rel.tags.to}` : `BakuBus Route ${rel.tags?.ref||''}`),
               color:     ROUTE_COLORS[i % ROUTE_COLORS.length],
               waypoints: coords,
             };
           })
-          .filter(r => r.waypoints.length > 2);
+          .filter(r => r.waypoints.length > 20); // Only keep routes with enough points to draw a real path
 
-        setOsmRoutes(routes);
+        if (routes.length > 0) {
+            console.log(`✅ Successfully loaded ${routes.length} live routes from OpenStreetMap!`);
+            setOsmRoutes(routes);
+        } else {
+            console.warn("⚠️ OSM returned empty geometry, falling back to local routes.");
+            setOsmRoutes(FALLBACK_ROUTES);
+        }
         setRoutesLoading(false);
       })
       .catch(err => {
-        console.warn('OSM fetch failed, using fallback routes:', err);
+        console.error('❌ OSM fetch failed explicitly:', err.message);
         setOsmRoutes(FALLBACK_ROUTES);
         setRoutesLoading(false);
       });

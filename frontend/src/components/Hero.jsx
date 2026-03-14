@@ -212,11 +212,11 @@ export default function Hero() {
               {[
                 {
                   label: 'NOₓ CAPTURED',
-                  value: `↑ ${upstreamAvg} → ↓ ${downstreamAvg} µg/m³`,
+                  value: `↑ ${countUpValue} → ↓ ${countDownValue} µg/m³`,
                 },
                 {
                   label: 'BUSES ACTIVE',
-                  value: `🚌 ${activeCount}`,
+                  value: `🚌 ${countBuses}`,
                 },
                 {
                   label: 'LOCATION',
