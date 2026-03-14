@@ -278,9 +278,16 @@ p, li, span, label {
   color: inherit;
 }
 
-.navbar a, .navbar button, .navbar span { color: white !important; }
-.navbar .nav-link { color: rgba(255,255,255,0.85); }
-.navbar .nav-link:hover, .navbar .nav-link.active { color: white; }
+.navbar a,
+.navbar button,
+.navbar span {
+  color: inherit !important;
+}
+.navbar .nav-link { color: var(--color-text); }
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--color-primary);
+}
 
 #hero h1, #hero h2, #hero p, #hero span, #hero div { color: var(--text-on-dark); }
 #hero .stat-pill { color: white; border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); }

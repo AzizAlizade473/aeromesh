@@ -1,0 +1,177 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AeroMesh PNA — Design Tokens (theme.css)
+   Light/Dark theme via CSS custom properties.
+   Import AFTER index.css to override base variables.
+   Rollback: remove the import of this file in main.jsx.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Light theme (default) ───────────────────────────────────────────
+   Semantic tokens as requested.
+   primary  = white  (#FFFFFF) surfaces
+   secondary = green (#27D3A2)
+--------------------------------------------------------------------- */
+:root {
+  --color-bg: #F7F9FB;
+  --color-surface: #FFFFFF;        /* primary = white */
+  --color-text: #0B1B22;
+  --color-primary: #27D3A2;        /* green accent */
+  --color-secondary: #27D3A2;      /* secondary = green */
+  --color-border: #E6EEF5;
+  --focus-ring: rgba(39,211,162,0.22);
+
+  /* Supportive neutrals */
+  --color-surface-alt: #F7F9FB;
+  --color-text-muted: #9AA7B2;
+
+  /* Backwards‑compat aliases used across the app */
+  --bg-void:         var(--color-bg);
+  --bg-surface:      var(--color-surface);
+  --bg-elevated:     #E3E8EF;
+  --bg-dark:         #071018;
+  --bg-dark-surface: #071018;
+
+  --primary:         var(--color-primary);
+  --primary-light:   #3DDBB8;
+  --primary-pale:    rgba(39,211,162,0.12);
+  --accent:          var(--color-secondary);
+  --accent-light:    #3DDBB8;
+  --accent-pale:     rgba(39,211,162,0.12);
+
+  --text-primary:       var(--color-text);
+  --text-secondary:     #4A5568;
+  --text-muted:         var(--color-text-muted);
+  --text-on-dark:       #E6EEF5;
+  --text-on-dark-muted: var(--color-text-muted);
+
+  --border:         var(--color-border);
+  --border-strong:  #B0BDD0;
+  --border-primary: var(--color-primary);
+
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --shadow-sm:   0 1px 3px rgba(15,23,42,0.08);
+  --shadow-md:   0 4px 12px rgba(15,23,42,0.12);
+  --shadow-lg:   0 8px 24px rgba(15,23,42,0.16);
+}
+
+/* ── Dark theme overrides (when .theme-dark is on <html>) ─────────── */
+:root.theme-dark {
+  --color-bg: #071018;
+  --color-surface: #000000;        /* secondary = black */
+  --color-text: #E6EEF5;
+  --color-primary: #27D3A2;        /* primary green in dark */
+  --color-secondary: #000000;
+  --color-border: #0F1A22;
+  --focus-ring: rgba(39,211,162,0.32);
+
+  --color-surface-alt: #071018;
+  --color-text-muted: #9AA7B2;
+
+  --bg-void:         var(--color-bg);
+  --bg-surface:      var(--color-surface);
+  --bg-elevated:     #0F1724;
+  --bg-dark:         #000000;
+  --bg-dark-surface: #000000;
+
+  --primary:         var(--color-primary);
+  --primary-light:   #3DDBB8;
+  --primary-pale:    rgba(39,211,162,0.18);
+  --accent:          var(--color-primary);
+  --accent-light:    #3DDBB8;
+  --accent-pale:     rgba(39,211,162,0.2);
+
+  --text-primary:       var(--color-text);
+  --text-secondary:     #C3D0DC;
+  --text-muted:         var(--color-text-muted);
+  --text-on-dark:       var(--color-text);
+  --text-on-dark-muted: var(--color-text-muted);
+
+  --border:         var(--color-border);
+  --border-strong:  #1F2933;
+  --border-primary: var(--color-primary);
+
+  --shadow-sm:   0 6px 18px rgba(2,6,23,0.45);
+  --shadow-md:   0 8px 28px rgba(2,6,23,0.6);
+  --shadow-lg:   0 16px 40px rgba(2,6,23,0.7);
+}
+
+/* ── Global body + focus ring ─────────────────────────────────────── */
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── Buttons (override to use semantic tokens) ────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  min-inline-size: 120px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
+}
+
+.btn-primary:hover  { opacity: 0.95; box-shadow: var(--shadow-md); }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-outline,
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.btn-outline:hover,
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--color-primary);
+}
+
+/* ── Cards ────────────────────────────────────────────────────────── */
+.card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* ── Scrollbar recolor to follow theme ────────────────────────────── */
+::-webkit-scrollbar-track { background: var(--bg-elevated); }
+::-webkit-scrollbar-thumb {
+  background: rgba(15,23,42,0.25);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(15,23,42,0.4);
+}
+
+/* ── Leaflet popup — respect theme surfaces ───────────────────────── */
+.leaflet-popup-content-wrapper {
+  background: var(--color-surface-alt) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.leaflet-popup-tip { background: var(--color-surface-alt) !important; }
+.leaflet-container { background: var(--color-bg); }
