@@ -1,0 +1,382 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AeroMesh PNA — Design System & Global Styles
+   WUF13 Competition · Baku, Azerbaijan
+   Governmental Clean Design — AYNA Inspired
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── CSS Variables (Design System) ─────────────────────────────────── */
+:root {
+  /* ── Core backgrounds ── */
+  --bg-void:         #F4F6F9;
+  --bg-surface:      #FFFFFF;
+  --bg-elevated:     #EEF1F5;
+  --bg-dark:         #1A2332;
+  --bg-dark-surface: #22304A;
+
+  /* ── Brand colors — AYNA / mygov.az inspired ── */
+  --primary:         #1B4F8A;
+  --primary-light:   #2563AB;
+  --primary-pale:    #EBF2FB;
+  --accent:          #2E8B57;
+  --accent-light:    #3DAA6B;
+  --accent-pale:     #EBF6EF;
+
+  /* ── Status colors — muted, professional ── */
+  --status-ok:       #2E7D32;
+  --status-warn:     #E65100;
+  --status-critical: #C62828;
+  --status-regen:    #1565C0;
+
+  /* ── Text ── */
+  --text-primary:    #1A2332;
+  --text-secondary:  #4A5568;
+  --text-muted:      #8A9BB0;
+  --text-on-dark:    #E8EDF4;
+  --text-on-dark-muted: #8A9BB0;
+
+  /* ── Borders ── */
+  --border:          #D1D9E6;
+  --border-strong:   #B0BDD0;
+  --border-primary:  #1B4F8A;
+
+  /* ── Typography ── */
+  --font-display:    'Inter', 'Segoe UI', sans-serif;
+  --font-body:       'Inter', 'Segoe UI', sans-serif;
+  --font-mono:       'JetBrains Mono', monospace;
+  --font-az:         'Inter', sans-serif;
+
+  /* ── Spacing & Radius ── */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.10);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img, video {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-elevated);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Cards ─────────────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* ── Buttons ───────────────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  padding: 10px 20px;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--primary-light); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  transition: background 0.2s;
+}
+.btn-outline:hover { background: var(--primary-pale); }
+
+/* ── Section titles ────────────────────────────────────────────────── */
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.section-title-on-dark {
+  color: var(--text-on-dark);
+}
+
+/* ── Status badges ─────────────────────────────────────────────────── */
+.badge-ok       { background: #E8F5E9; color: var(--status-ok); border: 1px solid #A5D6A7; }
+.badge-warn     { background: #FFF3E0; color: var(--status-warn); border: 1px solid #FFCC80; }
+.badge-critical { background: #FFEBEE; color: var(--status-critical); border: 1px solid #EF9A9A; }
+.badge-regen    { background: #E3F2FD; color: var(--status-regen); border: 1px solid #90CAF9; }
+
+/* ── Chemical formula ──────────────────────────────────────────────── */
+.chem {
+  font-family: var(--font-mono);
+  color: var(--primary);
+  font-size: 0.9em;
+  font-weight: 500;
+}
+.chem-box {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--primary);
+  background: var(--primary-pale);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.75rem;
+  display: inline-block;
+}
+
+/* ── Leaflet overrides — light theme ───────────────────────────────── */
+.leaflet-popup-content-wrapper {
+  background: white !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-body) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.leaflet-popup-tip {
+  background: white !important;
+}
+
+.leaflet-container {
+  background: var(--bg-void);
+}
+
+/* ── Utility Classes ───────────────────────────────────────────────── */
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.glass-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+/* ── Keyframe Animations ───────────────────────────────────────────── */
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.3; }
+}
+
+@keyframes fan-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bus-rotate-3d {
+  from { transform: rotateY(0deg) rotateX(-8deg); }
+  to   { transform: rotateY(360deg) rotateX(-8deg); }
+}
+
+/* HERO BUS ANIMATION */
+@keyframes bus-drive {
+  0%   { transform: translateX(60px); }
+  50%  { transform: translateX(-60px); }
+  100% { transform: translateX(60px); }
+}
+
+/* MAP PERFORMANCE (Spinner) */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* TEXT COLOR CONTRAST — FULL AUDIT */
+section, .section-wrapper {
+  color: var(--text-primary);
+}
+
+#hero, #dashboard, .dark-section {
+  color: var(--text-on-dark);
+}
+
+p, li, span, label {
+  color: inherit;
+}
+
+.navbar a, .navbar button, .navbar span { color: white !important; }
+.navbar .nav-link { color: rgba(255,255,255,0.85); }
+.navbar .nav-link:hover, .navbar .nav-link.active { color: white; }
+
+#hero h1, #hero h2, #hero p, #hero span, #hero div { color: var(--text-on-dark); }
+#hero .stat-pill { color: white; border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); }
+#hero .btn-outline { color: white; border-color: white; }
+#hero .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+.section-title         { color: var(--text-primary); }
+.section-subtitle      { color: var(--text-secondary); }
+.card p, .card span    { color: var(--text-secondary); }
+.card h3, .card h4     { color: var(--text-primary); }
+
+#dashboard, #dashboard * {
+  color: var(--text-on-dark);
+}
+#dashboard .badge-ok       { color: #81C784; background: rgba(129,199,132,0.15); border-color: rgba(129,199,132,0.3); }
+#dashboard .badge-warn     { color: #FFB74D; background: rgba(255,183,77,0.15);  border-color: rgba(255,183,77,0.3); }
+#dashboard .badge-critical { color: #EF9A9A; background: rgba(239,154,154,0.15); border-color: rgba(239,154,154,0.3); }
+#dashboard .badge-regen    { color: #90CAF9; background: rgba(144,202,249,0.15); border-color: rgba(144,202,249,0.3); }
+
+.research-card .year-badge  { background: var(--primary); color: white; }
+.research-card .journal     { color: var(--text-secondary); font-style: italic; }
+.research-card .authors     { color: var(--text-primary); font-weight: 600; }
+.research-card .finding     { color: var(--text-secondary); }
+.research-card .read-btn    { color: var(--primary); border-color: var(--primary); }
+
+footer, footer * { color: var(--text-on-dark); }
+footer a:hover   { color: white; }
+footer .text-muted { color: var(--text-on-dark-muted); }
+
+.trl-item.completed  { color: var(--status-ok); }
+.trl-item.current    { color: var(--primary); font-weight: 700; }
+.trl-item.future     { color: var(--text-muted); }
+
+.loading-screen { background: white; }
+.loading-screen .logo { color: var(--primary); }
+.loading-screen .status-text { color: var(--text-secondary); }
+.loading-screen .progress-track { background: var(--border); }
+.loading-screen .progress-fill  { background: var(--primary); }
+
+/* ── Global mobile responsive ─────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Sections */
+  section { padding: 3rem 1rem !important; }
+
+  /* Hero — single column */
+  .hero-grid { grid-template-columns: 1fr !important; }
+  .hero-bus-col { display: none; }
+  .hero-title { font-size: clamp(2rem, 8vw, 3.5rem) !important; }
+  .hero-stats { flex-direction: column; gap: 8px; }
+
+  /* Problem cards — stack */
+  .problem-grid { grid-template-columns: 1fr !important; }
+
+  /* Module exploder — stack */
+  .exploder-grid { grid-template-columns: 1fr !important; }
+  .exploder-info-panel { min-height: auto !important; }
+
+  /* Chemistry — stack */
+  .chemistry-panel { grid-template-columns: 1fr !important; }
+  .chemistry-tabs { gap: 6px; }
+  .chemistry-tabs button { font-size: 0.78rem; padding: 0.4rem 0.8rem; }
+
+  /* Dashboard — stack */
+  .dashboard-grid { grid-template-columns: 1fr !important; }
+  .baku-map-wrapper { height: 300px !important; }
+
+  /* Business — stack */
+  .business-grid, .biz-grid { grid-template-columns: 1fr !important; }
+
+  /* Research cards */
+  .research-card { width: 280px !important; }
+
+  /* SDG cards */
+  .sdg-grid { grid-template-columns: 1fr 1fr !important; }
+
+  /* TRL + Demo — stack */
+  .trl-grid { grid-template-columns: 1fr !important; }
+
+  /* Team cards */
+  .team-grid { grid-template-columns: 1fr 1fr !important; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+
+  /* Typography */
+  .section-title { font-size: 1.3rem !important; }
+
+  /* Regeneration cycle SVG */
+  .regen-svg { max-width: 100% !important; }
+
+  /* 3D bus in popup — smaller */
+  .bus-popup-model { transform: scale(0.75); transform-origin: top center; }
+}
+
+@media (max-width: 480px) {
+  .team-grid { grid-template-columns: 1fr !important; }
+  .sdg-grid { grid-template-columns: 1fr !important; }
+}

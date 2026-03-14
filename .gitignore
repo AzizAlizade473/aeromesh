@@ -1,0 +1,20 @@
+# Node / Frontend
+node_modules/
+dist/
+build/
+.env
+.env.local
+.DS_Store
+
+# Python / Backend
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+.env/
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
