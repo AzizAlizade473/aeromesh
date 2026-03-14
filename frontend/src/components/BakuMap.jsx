@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import useFleetData from '../hooks/useFleetData';
-import { triggerRegen } from '../services/api';
+import { API } from '../services/api';
 import 'leaflet/dist/leaflet.css';
 import BusModel3D from './BusModel3D';
 

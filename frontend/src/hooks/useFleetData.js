@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { API } from '../services/api';
 import { INITIAL_BUS_DATA } from '../data/busData';
 
 /**
@@ -19,7 +20,7 @@ export default function useFleetData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('/api/fleet');
+        const res = await axios.get(API.fleet());
         setFleet(res.data);
         setError(null);
         setLoading(false);

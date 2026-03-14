@@ -1,31 +1,26 @@
-/**
- * AeroMesh API Service
- * Axios instance configured for the FastAPI backend.
- */
-import axios from 'axios';
+// src/services/api.js
+// Reads VITE_API_URL from environment variables.
+// In production (Vercel): set VITE_API_URL = https://your-backend-domain.com
+// In development (local): leave VITE_API_URL empty or unset — falls back to '' (relative path, uses Vite proxy)
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  timeout: 10000,
-  headers: { 'Content-Type': 'application/json' },
-});
+const BASE_URL = import.meta.env.VITE_API_URL
+  ? import.meta.env.VITE_API_URL.replace(/\/$/, '')  // strip trailing slash if present
+  : ''                                                 // empty string = relative path = Vite proxy works
 
-/** Get sensor reading for a specific bus */
-export const getSensorData = (busId) => api.get(`/api/sensors/${busId}`).then((r) => r.data);
+export const apiUrl = (path) => {
+  // path must start with /api/...
+  // e.g. apiUrl('/api/fleet') returns:
+  //   production: 'https://aeromesh-backend.onrender.com/api/fleet'
+  //   development: '/api/fleet'  (Vite proxy forwards to localhost:8000)
+  return `${BASE_URL}${path}`
+}
 
-/** Get full fleet status with all buses */
-export const getFleetStatus = () => api.get('/api/fleet').then((r) => r.data);
-
-/** Get pollution heatmap data points */
-export const getHeatmap = () => api.get('/api/heatmap').then((r) => r.data);
-
-/** Get recent alert events */
-export const getAlerts = () => api.get('/api/alerts').then((r) => r.data);
-
-/** Trigger filter regeneration for a bus */
-export const triggerRegen = (busId) => api.post(`/api/regenerate/${busId}`).then((r) => r.data);
-
-/** Send ESP32 payload to ingest endpoint */
-export const ingestPayload = (data) => api.post('/api/ingest', data).then((r) => r.data);
-
-export default api;
+// Pre-built endpoint URLs — use these instead of hardcoding strings
+export const API = {
+  fleet:       () => apiUrl('/api/fleet'),
+  sensors:     (id = 'all') => apiUrl(`/api/sensors/${id}`),
+  ingest:      () => apiUrl('/api/ingest'),
+  regenerate:  (busId) => apiUrl(`/api/regenerate/${busId}`),
+  heatmap:     () => apiUrl('/api/heatmap'),
+  alerts:      () => apiUrl('/api/alerts'),
+}
