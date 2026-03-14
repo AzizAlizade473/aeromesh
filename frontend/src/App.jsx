@@ -1,17 +1,17 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Components
 import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import ProblemSection from './components/ProblemSection';
+import SystemExplainer from './components/SystemExplainer';
 import ModuleExploder from './components/ModuleExploder';
 import ChemistrySection from './components/ChemistrySection';
 import RegenerationCycle from './components/RegenerationCycle';
 import Dashboard from './components/Dashboard';
-import BusinessCase from './components/BusinessCase';
+import EconomicsSection from './components/EconomicsSection';
 import ResearchCards from './components/ResearchCards';
 import SDGSection from './components/SDGSection';
 import TRLTimeline from './components/TRLTimeline';
@@ -21,6 +21,24 @@ import Footer from './components/Footer';
 function MainSite() {
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    if (loading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) e.target.classList.add('visible');
+        });
+      },
+      { threshold: 0.08 }
+    );
+    // Add section-reveal class to the main wrapper of each section
+    document.querySelectorAll('section > div:first-of-type').forEach(el => {
+      el.classList.add('section-reveal');
+      observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [loading]);
+
   if (loading) {
     return <LoadingScreen onComplete={() => setLoading(false)} />;
   }
@@ -29,12 +47,12 @@ function MainSite() {
     <>
       <Navbar />
       <Hero />
-      <ProblemSection />
+      <SystemExplainer />
       <ModuleExploder />
       <ChemistrySection />
       <RegenerationCycle />
       <Dashboard />
-      <BusinessCase />
+      <EconomicsSection />
       <ResearchCards />
       <SDGSection />
       <TRLTimeline />

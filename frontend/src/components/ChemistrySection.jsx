@@ -151,6 +151,15 @@ export default function ChemistrySection() {
   const [ref, inView]       = useInView(0.15)
   const [activeTab, setActiveTab] = useState(0)
 
+  // Auto-advance tabs
+  useEffect(() => {
+    if (!inView) return
+    const id = setInterval(() => {
+      setActiveTab(t => (t + 1) % 4)  // 4 tabs
+    }, 5000)  // 5 seconds
+    return () => clearInterval(id)
+  }, [inView])
+
   const tabs = [
     { label: 'The Problem',     icon: '🏙' },
     { label: 'The Capture',     icon: '⚗️' },
@@ -248,7 +257,8 @@ export default function ChemistrySection() {
               whileHover={{ y:-2 }}
               whileTap={{ scale:0.97 }}
               style={{
-                padding:'0.55rem 1.2rem', borderRadius:999, border:'none', cursor:'pointer',
+                position: 'relative', overflow: 'hidden',
+                padding:'0.55rem 1.2rem', borderRadius:999, cursor:'pointer',
                 background: activeTab === i ? 'var(--primary)' : 'var(--bg-surface)',
                 color: activeTab === i ? 'white' : 'var(--text-secondary)',
                 fontWeight: activeTab === i ? 700 : 500,
@@ -259,6 +269,19 @@ export default function ChemistrySection() {
                 boxShadow: activeTab === i ? '0 4px 12px rgba(27,79,138,0.25)' : 'none',
               }}>
               {tab.icon} {tab.label}
+              {activeTab === i && (
+                <motion.div
+                  key={`progress-${activeTab}`}
+                  style={{
+                    position: 'absolute', bottom: 0, left: 0, height: 3,
+                    background: 'currentColor', borderRadius: '0 0 999px 999px',
+                    opacity: 0.5,
+                  }}
+                  initial={{ width: '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 5, ease: 'linear' }}
+                />
+              )}
             </motion.button>
           ))}
         </div>
