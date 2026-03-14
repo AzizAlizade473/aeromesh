@@ -371,44 +371,7 @@ export default function SystemExplainer() {
 
         </div>
 
-        {/* ── BOTTOM FLOW DIAGRAM ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.6 }}
-          style={{ marginTop: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, overflowX: 'auto', paddingBottom: 8 }}
-        >
-          {[
-            { icon: '🌫', label: 'City NOₓ', color: '#FF6B35' },
-            { icon: '🌬', label: 'Venturi Intake', color: '#78909C' },
-            { icon: '🧱', label: 'PM Filter', color: '#607D8B' },
-            { icon: '🛡', label: 'Guard Bed', color: '#455A64' },
-            { icon: '⚗️', label: 'AgX Core', color: '#43A047' },
-            { icon: '✅', label: 'Clean Air', color: '#2E7D32' },
-            { icon: '🔋', label: 'Depot Regen', color: '#FFC107' },
-            { icon: '🌱', label: 'KNO₃ Fertilizer', color: '#8BC34A' },
-          ].map((node, i, arr) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-              <motion.div
-                whileHover={{ y: -4, scale: 1.08 }}
-                style={{ textAlign: 'center', padding: '0 4px' }}
-              >
-                <div style={{ width: 44, height: 44, borderRadius: '50%', background: `${node.color}15`, border: `2px solid ${node.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', margin: '0 auto 4px' }}>
-                  {node.icon}
-                </div>
-                <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontWeight: 500, whiteSpace: 'nowrap', maxWidth: 56, lineHeight: 1.2 }}>{node.label}</div>
-              </motion.div>
-              {i < arr.length - 1 && (
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={inView ? { scaleX: 1 } : {}}
-                  transition={{ delay: 0.8 + i * 0.08 }}
-                  style={{ width: 20, height: 2, background: 'var(--border)', flexShrink: 0, transformOrigin: 'left' }}
-                />
-              )}
-            </div>
-          ))}
-        </motion.div>
+
 
       </div>
     </section>

@@ -22,22 +22,8 @@ function MainSite() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (loading) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) e.target.classList.add('visible');
-        });
-      },
-      { threshold: 0.08 }
-    );
-    // Add section-reveal class to the main wrapper of each section
-    document.querySelectorAll('section > div:first-of-type').forEach(el => {
-      el.classList.add('section-reveal');
-      observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, [loading]);
+    // Other simple setup if any
+  }, []);
 
   if (loading) {
     return <LoadingScreen onComplete={() => setLoading(false)} />;

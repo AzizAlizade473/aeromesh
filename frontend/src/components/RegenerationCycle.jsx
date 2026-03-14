@@ -1,102 +1,156 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import useInView from '../hooks/useInView';
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import useInView from '../hooks/useInView'
 
 const NODES = [
-  { angle: -90,  icon: '🚌', label: 'Bus on Route' },
-  { angle:   0,  icon: '🧲', label: 'Filter Captures NOₓ' },
-  { angle:  72,  icon: '⚠️', label: 'Saturation Hits 90%' },
-  { angle: 144,  icon: '🏭', label: 'Return to Depot' },
-  { angle: 216,  icon: '🔥', label: 'Thermal Desorption (150°C)' },
-];
+  { angle: -90,  icon: '🚌', label: 'Bus on Route',            color: '#1B4F8A' },
+  { angle:  -18, icon: '🧲', label: 'Filter Captures NOₓ',     color: '#43A047' },
+  { angle:   54, icon: '⚠️', label: 'Saturation 90%',          color: '#E65100' },
+  { angle:  126, icon: '🏭', label: 'Return to Depot',          color: '#455A64' },
+  { angle:  198, icon: '🔥', label: 'Thermal Desorption 200°C', color: '#C62828' },
+]
 
-const R_ICON  = 130;
-const R_LABEL = 195;
-const CX = 200;
-const CY = 200;
+const R     = 130   // radius for nodes
+const CX    = 210   // SVG center X
+const CY    = 210   // SVG center Y
+const SIZE  = 420   // SVG viewBox size
+
+function polarToXY(angleDeg, radius) {
+  const rad = (angleDeg * Math.PI) / 180
+  return { x: CX + radius * Math.cos(rad), y: CY + radius * Math.sin(rad) }
+}
 
 export default function RegenerationCycle() {
-  const [ref, inView] = useInView(0.3);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [ref, inView] = useInView(0.2)
+  const [active, setActive] = useState(0)
 
+  // Smooth auto-advance — one node at a time, every 1.5 seconds
   useEffect(() => {
-    if (!inView) return;
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % NODES.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, [inView]);
+    if (!inView) return
+    const id = setInterval(() => {
+      setActive(a => (a + 1) % NODES.length)
+    }, 1500)
+    return () => clearInterval(id)
+  }, [inView])
 
   return (
-    <section id="regeneration-cycle" ref={ref} style={{ padding: '100px 20px', background: 'var(--bg-elevated)' }}>
-      <div className="section-container" style={{ textAlign: 'center' }}>
-        <motion.h2 initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px, 3.5vw, 36px)', color: 'var(--text-primary)', marginBottom: '50px', fontWeight: 700 }}>
-          The Regeneration Cycle
-        </motion.h2>
+    <div ref={ref} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <svg
+        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        width="100%"
+        style={{ maxWidth: 420, display: 'block' }}
+      >
+        {/* ── Dashed circle path ── */}
+        <circle
+          cx={CX} cy={CY} r={R}
+          fill="none"
+          stroke="var(--border)"
+          strokeWidth={1.5}
+          strokeDasharray="6 4"
+        />
 
-        <div style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', maxWidth: 420 }}>
-          <svg viewBox="0 0 400 400" width="100%" height="100%" style={{ overflow: 'visible' }}>
-            {/* Dashed connecting circle path */}
-            <circle cx={CX} cy={CY} r={R_ICON} fill="none" stroke="#CBD5E1" strokeWidth={1.5} strokeDasharray="6 4" />
-            
-            {/* Animated dot traveling along the dashed circle */}
-            <circle r={5} fill="#1B4F8A">
-              <animateMotion dur="6s" repeatCount="indefinite" path="M 200,70 A 130,130 0 1,1 199.9,70" />
-            </circle>
+        {/* ── Animated traveling dot along the circle ── */}
+        {inView && (
+          <circle r={5} fill="var(--primary)" opacity={0.85}>
+            <animateMotion
+              dur="7.5s"
+              repeatCount="indefinite"
+              path={`M ${CX} ${CY - R} A ${R} ${R} 0 1 1 ${CX - 0.001} ${CY - R}`}
+            />
+          </circle>
+        )}
 
-            {/* Central Hub */}
-            <circle cx={CX} cy={CY} r={65} fill="#1B4F8A" />
-            <text x={CX} y={CY - 5} textAnchor="middle" fill="white" fontFamily="var(--font-mono)" fontSize="14" fontWeight="700">AgX Zeolite</text>
-            <text x={CX} y={CY + 15} textAnchor="middle" fill="white" fontFamily="var(--font-mono)" fontSize="14" fontWeight="700">Core</text>
+        {/* ── Center circle ── */}
+        <circle cx={CX} cy={CY} r={62} fill="var(--primary)" />
+        <text x={CX} y={CY - 10} textAnchor="middle" fontSize={11} fill="white" fontWeight={800} fontFamily="Inter, sans-serif">AgX</text>
+        <text x={CX} y={CY + 5}  textAnchor="middle" fontSize={11} fill="white" fontWeight={800} fontFamily="Inter, sans-serif">Zeolite</text>
+        <text x={CX} y={CY + 20} textAnchor="middle" fontSize={11} fill="white" fontWeight={800} fontFamily="Inter, sans-serif">Core</text>
 
-            {/* Outer Nodes */}
-            {NODES.map(({ angle, icon, label }, i) => {
-              const rad = (angle * Math.PI) / 180;
-              const iconX  = CX + R_ICON  * Math.cos(rad);
-              const iconY  = CY + R_ICON  * Math.sin(rad);
-              const labelX = CX + R_LABEL * Math.cos(rad);
-              const labelY = CY + R_LABEL * Math.sin(rad);
-              const isActive = i === activeIndex;
-              const isPast = i <= activeIndex;
-              
-              const words = label.split(' ');
-              const mid = Math.ceil(words.length / 2);
-              const line1 = words.slice(0, mid).join(' ');
-              const line2 = words.slice(mid).join(' ');
+        {/* ── Nodes ── */}
+        {NODES.map((node, i) => {
+          const nodePos  = polarToXY(node.angle, R)
+          // Label sits at R + 52px from center, same angle
+          const labelPos = polarToXY(node.angle, R + 58)
+          const isActive = active === i
 
-              return (
-                <g key={label} style={{ transition: 'opacity 0.4s', opacity: isActive || isPast ? 1 : 0.5 }}>
-                  <circle cx={iconX} cy={iconY} r={28} fill={isActive ? 'var(--primary)' : isPast ? 'var(--primary-pale)' : 'white'} stroke={isActive || isPast ? 'var(--primary)' : '#D1D9E6'} strokeWidth={2} style={{ transition: 'all 0.4s' }} />
-                  <text x={iconX} y={iconY + 6} textAnchor="middle" fontSize={24} style={{ transition: 'all 0.4s' }}>{icon}</text>
+          return (
+            <g key={i} onClick={() => setActive(i)} style={{ cursor: 'pointer' }}>
+              {/* Active ring — smooth scale transition only, no jagged ping */}
+              {isActive && (
+                <motion.circle
+                  cx={nodePos.x} cy={nodePos.y} r={28}
+                  fill="none"
+                  stroke={node.color}
+                  strokeWidth={2}
+                  initial={{ r: 22, opacity: 0.8 }}
+                  animate={{ r: 32, opacity: 0 }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
+                />
+              )}
+
+              {/* Node circle */}
+              <motion.circle
+                cx={nodePos.x} cy={nodePos.y} r={22}
+                fill={isActive ? node.color : 'white'}
+                stroke={node.color}
+                strokeWidth={isActive ? 0 : 1.5}
+                animate={{ r: isActive ? 24 : 22 }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+              />
+
+              {/* Icon */}
+              <text
+                x={nodePos.x} y={nodePos.y + 6}
+                textAnchor="middle"
+                fontSize={16}
+                style={{ userSelect: 'none' }}
+              >
+                {node.icon}
+              </text>
+
+              {/* Label — split into max 2 lines, always outside the circle */}
+              {node.label.split(' ').length <= 2 ? (
+                <text
+                  x={labelPos.x} y={labelPos.y + 4}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={10}
+                  fontFamily="Inter, sans-serif"
+                  fontWeight={isActive ? 700 : 500}
+                  fill={isActive ? node.color : 'var(--text-secondary)'}
+                >
+                  {node.label}
+                </text>
+              ) : (
+                <>
                   <text
-                    x={labelX} y={labelY}
+                    x={labelPos.x}
+                    y={labelPos.y - 6}
                     textAnchor="middle"
-                    dominantBaseline="middle"
-                    fontSize={11}
+                    fontSize={10}
                     fontFamily="Inter, sans-serif"
-                    fill={isActive ? 'var(--primary)' : '#4A5568'}
                     fontWeight={isActive ? 700 : 500}
-                    style={{ transition: 'all 0.4s' }}
+                    fill={isActive ? node.color : 'var(--text-secondary)'}
                   >
-                    {label.includes(' ') ? (
-                      <>
-                        <tspan x={labelX} dy="-0.6em">{line1}</tspan>
-                        <tspan x={labelX} dy="1.3em">{line2}</tspan>
-                      </>
-                    ) : label}
+                    {node.label.split(' ').slice(0, 2).join(' ')}
                   </text>
-                </g>
-              );
-            })}
-          </svg>
-        </div>
-
-        <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}
-          style={{ marginTop: '0px', maxWidth: '600px', margin: '40px auto 0', color: 'var(--text-secondary)', lineHeight: 1.6, fontSize: '0.95rem' }}>
-          Filters don't end up in landfills. When a module hits 90% saturation, it is swapped at the designated AYNA depot. The saturated module is heated to 150°C to release harmless nitrogen gas, completely restoring its capacity.
-        </motion.p>
-      </div>
-    </section>
-  );
+                  <text
+                    x={labelPos.x}
+                    y={labelPos.y + 8}
+                    textAnchor="middle"
+                    fontSize={10}
+                    fontFamily="Inter, sans-serif"
+                    fontWeight={isActive ? 700 : 500}
+                    fill={isActive ? node.color : 'var(--text-secondary)'}
+                  >
+                    {node.label.split(' ').slice(2).join(' ')}
+                  </text>
+                </>
+              )}
+            </g>
+          )
+        })}
+      </svg>
+    </div>
+  )
 }

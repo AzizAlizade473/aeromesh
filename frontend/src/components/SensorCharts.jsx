@@ -2,6 +2,20 @@ import { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine, Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
 import useFleetData from '../hooks/useFleetData';
 
+// Custom tooltip
+const CustomTooltip = ({ active, payload }) => {
+  if (!active || !payload?.length) return null
+  return (
+    <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 6, padding: '8px 12px', fontSize: '0.78rem', fontFamily: 'var(--font-mono)' }}>
+      <div style={{ color: '#EF5350', fontWeight: 700 }}>↑ {payload[0]?.value?.toFixed(1)} µg/m³ upstream</div>
+      <div style={{ color: '#43A047', fontWeight: 700 }}>↓ {payload[1]?.value?.toFixed(1)} µg/m³ downstream</div>
+      <div style={{ color: 'var(--text-muted)', marginTop: 4 }}>
+        Captured: {((payload[0]?.value - payload[1]?.value) / payload[0]?.value * 100).toFixed(0)}%
+      </div>
+    </div>
+  )
+}
+
 export default function SensorCharts() {
   const { fleet } = useFleetData();
   const [historicalData, setHistoricalData] = useState([]);
@@ -37,38 +51,87 @@ export default function SensorCharts() {
       
       {/* Chart 1: Upstream vs Downstream */}
       <div style={{ background: 'var(--bg-dark-surface)', borderRadius: 'var(--radius-md)', padding: '20px', border: '1px solid rgba(255,255,255,0.1)', flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <div>
-            <h3 style={{ margin: 0, fontSize: '1rem', color: 'white', fontFamily: 'var(--font-display)', fontWeight: 600 }}>Real-time NOₓ Differential</h3>
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-on-dark-muted)', fontFamily: 'var(--font-mono)' }}>FLEET AGGREGATE (µg/m³)</span>
-          </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <div style={{ width: 10, height: 10, background: '#EF4444', borderRadius: '2px' }}/>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-on-dark-muted)', fontFamily: 'var(--font-mono)' }}>UPSTREAM</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <div style={{ width: 10, height: 10, background: '#4ADE80', borderRadius: '2px' }}/>
-              <span style={{ fontSize: '0.7rem', color: 'var(--text-on-dark-muted)', fontFamily: 'var(--font-mono)' }}>DOWNSTREAM</span>
-            </div>
-          </div>
+        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-on-dark)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+          Real-Time NOₓ Differential
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#43A047', animation: 'blink 1.5s infinite', display: 'inline-block' }} />
         </div>
-        
+
         <div style={{ flex: 1, minHeight: 0 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={historicalData} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-              <XAxis dataKey="time" stroke="rgba(255,255,255,0.3)" fontSize={10} tickMargin={8} minTickGap={30} />
-              <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} domain={[0, 'auto']} />
-              <Tooltip 
-                contentStyle={{ background: '#1A2332', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', color: 'white' }}
-                itemStyle={{ fontFamily: 'var(--font-mono)', fontSize: '12px' }}
-                labelStyle={{ color: 'var(--text-on-dark-muted)', marginBottom: '4px', fontSize: '10px' }}
+            <AreaChart data={historicalData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
+              <defs>
+                <linearGradient id="upstreamGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%"  stopColor="#EF5350" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#EF5350" stopOpacity={0.02} />
+                </linearGradient>
+                <linearGradient id="downstreamGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%"  stopColor="#43A047" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#43A047" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+
+              <XAxis
+                dataKey="time"
+                hide={true}   // hide X axis labels — too cluttered at 500ms intervals
               />
-              <Line type="monotone" dataKey="upstream" stroke="#EF4444" strokeWidth={2} dot={false} isAnimationActive={false} />
-              <Line type="monotone" dataKey="downstream" stroke="#4ADE80" strokeWidth={2} dot={false} isAnimationActive={false} />
-            </LineChart>
+
+              <YAxis
+                domain={[0, 250]}
+                tick={{ fontSize: 9, fill: 'var(--text-on-dark-muted)', fontFamily: 'monospace' }}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={v => `${v}`}
+                width={32}
+              />
+
+              {/* WHO NO2 safe limit */}
+              <ReferenceLine
+                y={25}
+                stroke="#FFC107"
+                strokeDasharray="4 3"
+                strokeWidth={1}
+                label={{ value: 'WHO 25', position: 'insideTopRight', fontSize: 8, fill: '#FFC107', fontFamily: 'monospace' }}
+              />
+
+              <Tooltip content={<CustomTooltip />} />
+
+              {/* Upstream — red area */}
+              <Area
+                type="monotone"
+                dataKey="upstream"
+                stroke="#EF5350"
+                strokeWidth={2}
+                fill="url(#upstreamGrad)"
+                dot={false}
+                isAnimationActive={false}   // IMPORTANT: disable animation for live data
+              />
+
+              {/* Downstream — green area */}
+              <Area
+                type="monotone"
+                dataKey="downstream"
+                stroke="#43A047"
+                strokeWidth={2}
+                fill="url(#downstreamGrad)"
+                dot={false}
+                isAnimationActive={false}   // IMPORTANT: disable animation for live data
+              />
+            </AreaChart>
           </ResponsiveContainer>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'flex', gap: 16, marginTop: 6, fontSize: '0.72rem', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div style={{ width: 12, height: 3, background: '#EF5350', borderRadius: 2 }} />
+            <span style={{ color: 'var(--text-on-dark-muted)' }}>Upstream (city air)</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div style={{ width: 12, height: 3, background: '#43A047', borderRadius: 2 }} />
+            <span style={{ color: 'var(--text-on-dark-muted)' }}>Downstream (filtered)</span>
+          </div>
         </div>
       </div>
 

@@ -381,47 +381,4 @@ footer .text-muted { color: var(--text-on-dark-muted); }
   .sdg-grid { grid-template-columns: 1fr !important; }
 }
 
-/* -- SECTION TRANSITIONS ------------------------------------------- */
-section {
-  position: relative;
-}
-section::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  background: linear-gradient(to bottom, transparent, var(--section-fade-color, var(--bg-void)));
-  pointer-events: none;
-  z-index: 1;
-}
-#hero::after          { --section-fade-color: var(--bg-surface); }
-#problem::after       { --section-fade-color: var(--bg-elevated); }
-#how-it-works::after  { --section-fade-color: var(--bg-elevated); }
-#chemistry::after     { --section-fade-color: var(--bg-surface); }
-#dashboard::after     { --section-fade-color: var(--bg-void); }
-#before-after::after  { --section-fade-color: var(--bg-surface); }
-#business::after      { --section-fade-color: var(--bg-elevated); }
-#science::after       { --section-fade-color: var(--bg-surface); }
-#sdg::after           { --section-fade-color: var(--bg-void); }
-#trl-demo::after      { --section-fade-color: var(--bg-elevated); }
-#team::after          { --section-fade-color: var(--bg-void); }
-
-/* Scroll-triggered section reveal */
-.section-reveal {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
-              transform 0.7s cubic-bezier(0.22,1,0.36,1);
-}
-.section-reveal.visible {
-  opacity: 1;
-  transform: none;
-}
-@media (max-width: 768px) {
-  #how-it-works .main-panel { grid-template-columns: 1fr !important; }
-  #business .kpi-strip { grid-template-columns: 1fr 1fr !important; }
-  #business .model-grid { grid-template-columns: 1fr !important; }
-}
 
