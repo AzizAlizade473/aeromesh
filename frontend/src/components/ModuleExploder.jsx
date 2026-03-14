@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useInView from '../hooks/useInView';
 
@@ -46,8 +46,30 @@ const LAYERS = [
 ];
 
 export default function ModuleExploder() {
-  const [ref, inView] = useInView(0.2);
-  const [activeLayer, setActiveLayer] = useState(3); // default to AgX core
+  const [activeLayer, setActiveLayer]   = useState(0);
+  const [userPaused, setUserPaused]     = useState(false);
+  const pauseTimer                       = useRef(null);
+  const [ref, inView]                    = useInView(0.2);
+
+  // Auto-advance
+  useEffect(() => {
+    if (!inView || userPaused) return;
+    const id = setInterval(() => {
+      setActiveLayer(l => (l + 1) % LAYERS.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [inView, userPaused]);
+
+  // Manual click — pause for 8s then resume
+  const handleLayerClick = (i) => {
+    setActiveLayer(i);
+    setUserPaused(true);
+    clearTimeout(pauseTimer.current);
+    pauseTimer.current = setTimeout(() => setUserPaused(false), 8000);
+  };
+
+  // Cleanup
+  useEffect(() => () => clearTimeout(pauseTimer.current), []);
 
   return (
     <section id="module-exploder" ref={ref} style={{ padding: '100px 20px 80px', background: 'var(--bg-surface)' }}>
@@ -73,9 +95,26 @@ export default function ModuleExploder() {
           }}>
             Hardware Architecture
           </h2>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--primary)', letterSpacing: '0.05em', fontWeight: 600 }}>
-            AeroMesh PNA-v3 — 5 Layer Filter Stack
-          </p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--primary)', letterSpacing: '0.05em', fontWeight: 600, margin: 0 }}>
+              AeroMesh PNA-v3 — 5 Layer Filter Stack
+            </p>
+            <button
+              onClick={() => {
+                setUserPaused(p => !p)
+                if (userPaused) clearTimeout(pauseTimer.current)
+              }}
+              style={{
+                background: 'none', border: '1px solid var(--border)',
+                borderRadius: 999, padding: '3px 10px',
+                fontSize: '0.72rem', color: 'var(--text-muted)',
+                cursor: 'pointer', fontFamily: 'var(--font-body)',
+                display: 'flex', alignItems: 'center', gap: 5,
+              }}
+            >
+              {userPaused ? '▶ Resume' : '⏸ Pause'}
+            </button>
+          </div>
         </motion.div>
 
         {/* Two-column layout: layers left, info right */}
@@ -86,7 +125,7 @@ export default function ModuleExploder() {
             {LAYERS.map((layer, i) => (
               <motion.div
                 key={layer.id}
-                onClick={() => setActiveLayer(i)}
+                onClick={() => handleLayerClick(i)}
                 whileHover={{ x: 6 }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -100,6 +139,7 @@ export default function ModuleExploder() {
                   transition:'all 0.25s',
                   display:'flex', alignItems:'center', gap:14,
                   boxShadow: activeLayer === i ? `0 4px 16px ${layer.color}20` : 'var(--shadow-sm)',
+                  position: 'relative', overflow: 'hidden',
                 }}
               >
                 {/* Layer number badge */}
@@ -128,6 +168,24 @@ export default function ModuleExploder() {
                     initial={{ opacity:0, x:-5 }}
                     animate={{ opacity:1, x:0 }}
                     style={{ color: layer.color, fontSize:'1rem' }}>→</motion.div>
+                )}
+
+                {/* Progress Bar */}
+                {activeLayer === i && !userPaused && (
+                  <motion.div
+                    key={`progress-${activeLayer}`}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0, left: 0,
+                      height: 3,
+                      background: LAYERS[i].color,
+                      borderRadius: '0 0 var(--radius-md) var(--radius-md)',
+                      opacity: 0.7,
+                    }}
+                    initial={{ width: '0%' }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 3, ease: 'linear' }}
+                  />
                 )}
               </motion.div>
             ))}

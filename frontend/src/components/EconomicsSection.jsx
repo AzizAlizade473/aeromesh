@@ -1,5 +1,5 @@
 // src/components/EconomicsSection.jsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import useInView from '../hooks/useInView'
 import useCountUp from '../hooks/useCountUp'
@@ -222,8 +222,34 @@ function BOMBreakdown({ inView }) {
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export default function EconomicsSection() {
-  const [ref, inView]   = useInView(0.1)
-  const [tab, setTab]   = useState('overview')
+  const TABS_ORDER = ['overview', 'bom', 'comparison', 'model'];
+
+  const [tab, setTab]           = useState('overview');
+  const [userPaused, setUserPaused] = useState(false);
+  const pauseTimer               = useRef(null);
+  const [ref, inView]            = useInView(0.15);
+
+  // Auto-advance through tabs
+  useEffect(() => {
+    if (!inView || userPaused) return;
+    const id = setInterval(() => {
+      setTab(current => {
+        const idx = TABS_ORDER.indexOf(current);
+        return TABS_ORDER[(idx + 1) % TABS_ORDER.length];
+      });
+    }, 6000);
+    return () => clearInterval(id);
+  }, [inView, userPaused]);
+
+  // Manual click — pause 10s then resume
+  const handleTabClick = (tabId) => {
+    setTab(tabId);
+    setUserPaused(true);
+    clearTimeout(pauseTimer.current);
+    pauseTimer.current = setTimeout(() => setUserPaused(false), 10000);
+  };
+
+  useEffect(() => () => clearTimeout(pauseTimer.current), []);
   const balance24       = useCountUp(inView ? 370500 : 0, 2000)
   const buses24         = useCountUp(inView ? 800 : 0, 1800)
   const saas24          = useCountUp(inView ? 24000 : 0, 2000)
@@ -285,12 +311,13 @@ export default function EconomicsSection() {
         </motion.div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: '1.5rem', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'center' }}>
           {TABS.map(t => (
             <button key={t.id}
-              onClick={() => setTab(t.id)}
+              onClick={() => handleTabClick(t.id)}
               style={{
-                padding: '0.5rem 1rem', borderRadius: 6, border: 'none', cursor: 'pointer',
+                position: 'relative', overflow: 'hidden',
+                padding: '0.5rem 1rem', borderRadius: 6, cursor: 'pointer',
                 background: tab === t.id ? 'var(--primary)' : 'var(--bg-surface)',
                 color: tab === t.id ? 'white' : 'var(--text-secondary)',
                 fontWeight: tab === t.id ? 700 : 500, fontSize: '0.82rem',
@@ -298,8 +325,41 @@ export default function EconomicsSection() {
                 fontFamily: 'var(--font-body)', transition: 'all 0.2s',
               }}>
               {t.label}
+              {tab === t.id && !userPaused && (
+                <motion.div
+                  key={`tab-progress-${tab}`}
+                  style={{
+                    position: 'absolute',
+                    bottom: 0, left: 0,
+                    height: 3,
+                    background: 'white',
+                    borderRadius: '0 0 4px 4px',
+                    opacity: 0.6,
+                  }}
+                  initial={{ width: '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 6, ease: 'linear' }}
+                />
+              )}
             </button>
           ))}
+          {/* Right side of tabs row */}
+          <button
+            onClick={() => {
+              setUserPaused(p => !p)
+              if (userPaused) clearTimeout(pauseTimer.current)
+            }}
+            style={{
+              background: 'none', border: '1px solid var(--border)',
+              borderRadius: 999, padding: '3px 10px',
+              fontSize: '0.72rem', color: 'var(--text-muted)',
+              cursor: 'pointer', fontFamily: 'var(--font-body)',
+              marginLeft: 'auto',
+              display: 'flex', alignItems: 'center', gap: 5,
+            }}
+          >
+            {userPaused ? '▶ Auto' : '⏸ Pause'}
+          </button>
         </div>
 
         {/* Tab panels */}
