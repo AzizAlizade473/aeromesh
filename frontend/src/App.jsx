@@ -21,9 +21,7 @@ import Footer from './components/Footer';
 function MainSite() {
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Other simple setup if any
-  }, []);
+
 
   if (loading) {
     return <LoadingScreen onComplete={() => setLoading(false)} />;

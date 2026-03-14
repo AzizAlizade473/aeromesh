@@ -56,284 +56,267 @@ export default function Hero() {
         <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '3rem', alignItems: 'center' }}>
 
           {/* Left Column */}
-          <div>
-            {/* Live Pill */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',   // all elements left-aligned
+            gap: 0,                     // control spacing manually per element
+            maxWidth: 620,
+          }}>
+
+            {/* ── LIVE BADGE ── */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...TRANSITION, delay: 0.3 }}
               style={{
-                display: 'inline-flex', alignItems: 'center', gap: '8px',
-                padding: '6px 16px', border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '20px', background: 'rgba(255,255,255,0.08)',
-                color: '#4ADE80', fontSize: '0.75rem', fontWeight: 600,
-                marginBottom: '2rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 7,
+                padding: '5px 14px',
+                borderRadius: 999,
+                border: '1px solid rgba(255,255,255,0.25)',
+                background: 'rgba(255,255,255,0.08)',
+                marginBottom: 20,
               }}
             >
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#4ADE80', animation: 'blink 1.5s infinite' }} />
-              LIVE SYSTEM ACTIVE
+              <span style={{
+                width: 7, height: 7,
+                borderRadius: '50%',
+                background: '#43A047',
+                animation: 'blink 1.5s infinite',
+                flexShrink: 0,
+              }} />
+              <span style={{
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: 'white',
+                letterSpacing: '0.08em',
+                fontFamily: 'var(--font-body)',
+              }}>
+                LIVE SYSTEM ACTIVE
+              </span>
             </motion.div>
 
-            {/* Headline */}
+            {/* ── HEADLINE ── */}
             <h1 style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(36px, 5.5vw, 72px)',
-              lineHeight: 1.1,
-              marginBottom: '1.5rem',
+              fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)',
+              fontWeight: 900,
               color: 'white',
-              fontWeight: 700,
+              lineHeight: 1.05,
+              letterSpacing: '-0.02em',
+              margin: 0,
+              marginBottom: 20,
             }}>
               {headlineWords.map((word, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ ...TRANSITION, delay: 0.4 + (i * 0.08) }}>
+                <motion.div key={i} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ ...TRANSITION, delay: 0.4 + (i * 0.08) }} style={{ display: 'inline-block', marginRight: '0.2em' }}>
                   {word}
                 </motion.div>
               ))}
             </h1>
 
-            {/* Sub-headline */}
+            {/* ── SUBTITLE ── */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...TRANSITION, delay: 0.8 }}
               style={{
-                fontSize: '1.05rem', color: 'var(--text-on-dark-muted)',
-                maxWidth: '560px', marginBottom: '2.5rem', lineHeight: 1.7,
+                fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)',
+                color: 'rgba(255,255,255,0.72)',
+                lineHeight: 1.7,
+                maxWidth: 480,
+                margin: 0,
+                marginBottom: 28,
+                fontFamily: 'var(--font-body)',
               }}
             >
-              AeroMesh PNA converts 800 municipal transit vehicles into a city-wide mobile NOₓ filtration network — active today, no infrastructure rebuild required.
+              AeroMesh PNA converts 800 municipal transit vehicles into a
+              city-wide mobile NOₓ filtration network — active today,
+              no infrastructure rebuild required.
             </motion.p>
 
-            {/* CTAs */}
+            {/* ── BUTTONS — side by side, identical height ── */}
+            {/* They must render side by side on desktop using flexDirection: row */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ ...TRANSITION, delay: 1 }}
               style={{
                 display: 'flex',
-                flexDirection: 'row',     // side by side, NOT column
-                alignItems: 'center',
+                flexDirection: 'row',         // ← MUST be row, not column
+                alignItems: 'stretch',        // ← forces equal height
                 gap: 12,
-                marginTop: 28,
-                marginBottom: '3rem',
-                flexWrap: 'wrap',         // wraps to next line on very small screens
+                marginBottom: 32,
+                flexWrap: 'wrap',
               }}
             >
-              <motion.button
-                onClick={() => scrollTo('problem')}
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+              <button
+                onClick={() => {
+                  const el = document.getElementById('problem')
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
                 style={{
-                  padding: '0.75rem 1.6rem',
+                  padding: '12px 28px',                    // ← same padding as second button
                   background: 'var(--primary)',
                   color: 'white',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
+                  border: '2px solid var(--primary)',      // ← same border width as second button
+                  borderRadius: 6,                          // ← same borderRadius as second button
                   fontFamily: 'var(--font-body)',
                   fontWeight: 700,
-                  fontSize: '0.9rem',
+                  fontSize: '0.9rem',                       // ← same fontSize as second button
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
-                  boxShadow: '0 4px 14px rgba(27,79,138,0.4)',
+                  lineHeight: 1,                            // ← same lineHeight as second button
                 }}
               >
                 ▶ How It Works
-              </motion.button>
+              </button>
 
-              <motion.button
-                onClick={() => scrollTo('dashboard')}
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
+              <button
+                onClick={() => {
+                  const el = document.getElementById('dashboard')
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
                 style={{
-                  padding: '0.75rem 1.6rem',
+                  padding: '12px 28px',                    // ← IDENTICAL to first button
                   background: 'transparent',
                   color: 'white',
-                  border: '2px solid rgba(255,255,255,0.5)',
-                  borderRadius: 'var(--radius-sm)',
+                  border: '2px solid rgba(255,255,255,0.45)', // ← same border width
+                  borderRadius: 6,                           // ← IDENTICAL
                   fontFamily: 'var(--font-body)',
                   fontWeight: 600,
-                  fontSize: '0.9rem',
+                  fontSize: '0.9rem',                        // ← IDENTICAL
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
+                  lineHeight: 1,                             // ← IDENTICAL
                 }}
               >
                 Live Dashboard
-              </motion.button>
+              </button>
             </motion.div>
 
-            {/* Live Stats */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ ...TRANSITION, delay: 1.2 }}
-              style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <div style={{ padding: '12px 20px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-on-dark-muted)', marginBottom: '4px', fontWeight: 500 }}>NOₓ CAPTURED</span>
-                <span style={{ fontFamily: 'var(--font-mono)', color: 'white', fontSize: '1.1rem', fontWeight: 600 }}>
-                  <span style={{ color: '#EF4444' }}>⬆ {countUpValue}</span> → <span style={{ color: '#4ADE80' }}>⬇ {countDownValue}</span> <span style={{ fontSize: '0.8rem', color: 'var(--text-on-dark-muted)' }}>µg/m³</span>
-                </span>
-              </div>
-              <div style={{ padding: '12px 20px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-on-dark-muted)', marginBottom: '4px', fontWeight: 500 }}>BUSES ACTIVE</span>
-                <span style={{ fontFamily: 'var(--font-mono)', color: 'white', fontSize: '1.1rem', fontWeight: 600 }}>🚌 {countBuses}</span>
-              </div>
-              <div style={{ padding: '12px 20px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <span style={{ color: 'var(--text-on-dark-muted)', fontSize: '0.8rem' }}>📍 40.4093°N 49.8671°E<br/>BAKU, AZ</span>
-              </div>
+            {/* ── STAT PILLS — three in a row, equal width ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ ...TRANSITION, delay: 1.2 }}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',         // ← MUST be row
+                alignItems: 'stretch',        // ← equal height
+                gap: 10,
+                flexWrap: 'wrap',
+              }}
+            >
+              {[
+                {
+                  label: 'NOₓ CAPTURED',
+                  value: `↑ ${upstreamAvg} → ↓ ${downstreamAvg} µg/m³`,
+                },
+                {
+                  label: 'BUSES ACTIVE',
+                  value: `🚌 ${activeCount}`,
+                },
+                {
+                  label: 'LOCATION',
+                  value: '📍 BAKU, AZ',
+                },
+              ].map(({ label, value }) => (
+                <div key={label} style={{
+                  padding: '10px 14px',
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: 8,
+                  flex: 1,
+                  minWidth: 120,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+                }}>
+                  <div style={{
+                    fontSize: '0.62rem',
+                    color: 'rgba(255,255,255,0.5)',
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    marginBottom: 5,
+                    fontFamily: 'var(--font-body)',
+                  }}>
+                    {label}
+                  </div>
+                  <div style={{
+                    fontSize: '0.82rem',
+                    color: 'white',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-mono)',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {value}
+                  </div>
+                </div>
+              ))}
             </motion.div>
           </div>
 
-          {/* Right Column — Real Bus Photo */}
+          {/* Right Column — Animated Bus SVG */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ ...TRANSITION, delay: 0.8 }}
             className="bus-illustration-container"
+            style={{ position: 'relative', height: '400px', width: '100%' }}
           >
-            <div style={{
-              position: 'relative',
-              width: '100%',
-              maxWidth: 580,
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'center',
-            }}>
-              {/* Bus image — user will provide the file */}
-              <motion.div
-                animate={{ x: [40, -40, 40] }}
-                transition={{ duration: 8, ease: 'easeInOut', repeat: Infinity }}
-                style={{ position: 'relative', width: '100%' }}
-              >
-                <img
-                  src="/hero-bus.png"
-                  alt="Baku AeroMesh Bus"
-                  style={{
-                    width: '100%',
-                    maxWidth: 520,
-                    objectFit: 'contain',
-                    display: 'block',
-                    // Natural colors — no tinting, no filters, no color overlays
-                    filter: 'none',
-                  }}
-                />
+            <div style={{ position: 'absolute', width: '100%', height: '100%' }}>
+              {/* Wrapper with bus-drive animation */}
+              <div style={{
+                animation: 'bus-drive 8s ease-in-out infinite',
+                willChange: 'transform',
+              }}>
+                <svg viewBox="0 0 600 300" width="100%" height="100%" style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))' }}>
+                  {/* Main Body */}
+                  <rect x="50" y="100" width="450" height="150" rx="20" fill="#22304A" stroke="#3B5068" strokeWidth="3" />
+                  {/* Windows */}
+                  <rect x="70" y="115" width="410" height="60" rx="10" fill="#1A2332" />
+                  {/* Screen */}
+                  <rect x="420" y="185" width="60" height="40" rx="5" fill="#1A2332" />
+                  <rect x="430" y="195" width="40" height="20" rx="2" fill="var(--accent)" opacity="0.8" />
+                  {/* Wheels */}
+                  <circle cx="120" cy="250" r="30" fill="#111" stroke="#3B5068" strokeWidth="3" />
+                  <circle cx="120" cy="250" r="15" fill="#22304A" />
+                  <circle cx="380" cy="250" r="30" fill="#111" stroke="#3B5068" strokeWidth="3" />
+                  <circle cx="380" cy="250" r="15" fill="#22304A" />
+                  {/* AeroMesh Module */}
+                  <g>
+                    <rect x="200" y="70" width="160" height="30" rx="4" fill="var(--primary)" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
+                    <path d="M360 85 L400 70 L400 100 Z" fill="#1A2332" stroke="#3B5068" strokeWidth="1" />
+                    <path d="M160 85 L200 75 L200 95 Z" fill="#1A2332" stroke="#3B5068" strokeWidth="1" />
+                    <rect x="220" y="78" width="120" height="14" rx="2" fill="url(#coreGradient)" />
+                    <defs>
+                      <linearGradient id="coreGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#C62828" />
+                        <stop offset="50%" stopColor="#E65100" />
+                        <stop offset="100%" stopColor="#2E8B57" />
+                      </linearGradient>
+                    </defs>
+                  </g>
+                </svg>
+              </div>
 
-                {/* AeroMesh module highlight on roof — overlaid on real bus photo */}
-                <motion.div
-                  animate={{ opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{
-                    position: 'absolute',
-                    // Adjust top/left/width to align with roof of the real bus photo
-                    top: '8%',
-                    left: '20%',
-                    width: '55%',
-                    height: '10%',
-                    background: 'rgba(27, 79, 138, 0.5)',
-                    border: '2px solid rgba(27, 79, 138, 0.9)',
-                    borderRadius: 4,
-                    boxShadow: '0 0 16px rgba(27, 79, 138, 0.6)',
-                  }}
-                />
-
-                {/* Floating label — AeroMesh Module */}
-                <motion.div
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1, duration: 0.5 }}
-                  style={{
-                    position: 'absolute',
-                    top: '2%',
-                    left: '22%',
-                    background: '#1B4F8A',
-                    color: 'white',
-                    fontSize: '0.65rem',
-                    fontWeight: 700,
-                    padding: '3px 8px',
-                    borderRadius: 4,
-                    fontFamily: 'var(--font-mono)',
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                  }}
-                >
-                  AeroMesh PNA Module
+              {/* Floating Labels */}
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 0.5 }}
+                  style={{ position: 'absolute', top: '20px', left: '75%', transform: 'translateX(-50%)', background: 'rgba(26,35,50,0.9)', padding: '4px 8px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-on-dark-muted)' }}>
+                  Venturi Intake
                 </motion.div>
-
-                {/* Floating label — AgX Zeolite Core */}
-                <motion.div
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.3, duration: 0.5 }}
-                  style={{
-                    position: 'absolute',
-                    top: '12%',
-                    right: '5%',
-                    background: '#2E7D32',
-                    color: 'white',
-                    fontSize: '0.65rem',
-                    fontWeight: 700,
-                    padding: '3px 8px',
-                    borderRadius: 4,
-                    fontFamily: 'var(--font-mono)',
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                  }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.7, duration: 0.5 }}
+                  style={{ position: 'absolute', top: '10px', left: '55%', transform: 'translateX(-50%)', background: 'rgba(27,79,138,0.3)', padding: '4px 8px', border: '1px solid var(--primary)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'rgba(255,255,255,0.9)' }}>
                   AgX Zeolite Core
                 </motion.div>
-
-                {/* Floating label — ESP32 IoT */}
-                <motion.div
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1.6, duration: 0.5 }}
-                  style={{
-                    position: 'absolute',
-                    top: '22%',
-                    left: '5%',
-                    background: '#6A1B9A',
-                    color: 'white',
-                    fontSize: '0.65rem',
-                    fontWeight: 700,
-                    padding: '3px 8px',
-                    borderRadius: 4,
-                    fontFamily: 'var(--font-mono)',
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                  }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.9, duration: 0.5 }}
+                  style={{ position: 'absolute', top: '20px', left: '25%', transform: 'translateX(-50%)', background: 'rgba(26,35,50,0.9)', padding: '4px 8px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-on-dark-muted)' }}>
                   ESP32 IoT Node
                 </motion.div>
-
-                {/* NOₓ particle stream entering the bus (left side) */}
-                {[0,1,2,3,4].map(i => (
-                  <motion.div key={i}
-                    style={{
-                      position: 'absolute',
-                      left: '-20px',
-                      top: `${30 + i * 8}%`,
-                      width: 8, height: 8,
-                      borderRadius: '50%',
-                      background: ['#FF6B35','#FF8C42','#E64A19'][i % 3],
-                      opacity: 0.8,
-                    }}
-                    animate={{ x: [0, 60], opacity: [0.8, 0] }}
-                    transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.28, ease: 'easeIn' }}
-                  />
-                ))}
-
-                {/* Clean air particles exiting the bus (right side) */}
-                {[0,1,2,3].map(i => (
-                  <motion.div key={i}
-                    style={{
-                      position: 'absolute',
-                      right: '-20px',
-                      top: `${32 + i * 9}%`,
-                      width: 7, height: 7,
-                      borderRadius: '50%',
-                      background: ['#43A047','#66BB6A','#81C784'][i % 3],
-                      opacity: 0.7,
-                    }}
-                    animate={{ x: [0, 40], opacity: [0, 0.7, 0] }}
-                    transition={{ duration: 1.6, repeat: Infinity, delay: i * 0.35, ease: 'easeOut' }}
-                  />
-                ))}
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>

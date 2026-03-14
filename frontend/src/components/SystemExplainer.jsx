@@ -3,177 +3,6 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import useInView from '../hooks/useInView'
 
-// ─── ANIMATED BUS CROSS-SECTION ──────────────────────────────────────────────
-// Full SVG showing bus top-view cross section with animated airflow
-function BusCrossSection({ step }) {
-  // step 0: bus moving, dirty air entering
-  // step 1: air passing through 3 filter layers
-  // step 2: clean air exiting, NOₓ trapped
-  // step 3: depot regeneration
-  return (
-    <svg viewBox="0 0 600 280" width="100%" style={{ maxWidth: 680, display: 'block', margin: '0 auto' }}>
-      <defs>
-        {/* Dirty air gradient */}
-        <linearGradient id="dirtyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#FF6B35" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#FF6B35" stopOpacity="0.1" />
-        </linearGradient>
-        {/* Clean air gradient */}
-        <linearGradient id="cleanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#43A047" stopOpacity="0.1" />
-          <stop offset="100%" stopColor="#43A047" stopOpacity="0.8" />
-        </linearGradient>
-        {/* Filter layer gradient */}
-        <linearGradient id="filterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#1B4F8A" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#0D47A1" stopOpacity="0.7" />
-        </linearGradient>
-        {/* Glow filter */}
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-
-      {/* ── ROAD ── */}
-      <rect x={0} y={230} width={600} height={50} fill="#2D3748" />
-      {[0,1,2,3,4,5,6,7,8].map(i => (
-        <rect key={i} x={i*70+10} y={252} width={45} height={5} rx={2} fill="rgba(255,255,255,0.3)" />
-      ))}
-
-      {/* ── BUS BODY ── */}
-      <rect x={60} y={140} width={480} height={90} rx={8} fill="#1B4F8A" />
-      {/* Bus windows */}
-      {[80,140,200,260,380,440,500].map(wx => (
-        <rect key={wx} x={wx} y={150} width={45} height={28} rx={3}
-          fill="rgba(200,230,255,0.6)" stroke="rgba(255,255,255,0.3)" strokeWidth={1} />
-      ))}
-      {/* Bus wheel wells */}
-      <ellipse cx={130} cy={232} rx={32} ry={18} fill="#1A202C" />
-      <ellipse cx={470} cy={232} rx={32} ry={18} fill="#1A202C" />
-      <ellipse cx={130} cy={232} rx={22} ry={12} fill="#2D3748" />
-      <ellipse cx={470} cy={232} rx={22} ry={12} fill="#2D3748" />
-
-      {/* ── AEROMESH MODULE ON ROOF ── */}
-      <rect x={160} y={108} width={280} height={32} rx={4} fill="#0D47A1"
-        stroke="rgba(255,255,255,0.3)" strokeWidth={1} />
-      {/* Venturi intake grille */}
-      <rect x={160} y={108} width={50} height={32} rx={4} fill="#0A3880" />
-      {[0,1,2,3].map(i => (
-        <rect key={i} x={167} y={114 + i*6} width={36} height={3} rx={1} fill="rgba(255,255,255,0.4)" />
-      ))}
-      {/* Module label */}
-      <text x={300} y={129} textAnchor="middle" fontSize={9} fill="white"
-        fontWeight={700} fontFamily="monospace" letterSpacing={1}>
-        AEROMESH PNA MODULE
-      </text>
-      {/* Exhaust side */}
-      <rect x={390} y={108} width={50} height={32} rx={4} fill="#0A3880" />
-      {[0,1,2,3].map(i => (
-        <rect key={i} x={397} y={114 + i*6} width={36} height={3} rx={1} fill="rgba(255,255,255,0.4)" />
-      ))}
-
-      {/* ── FILTER LAYERS (visible inside module) ── */}
-      {step >= 1 && (
-        <>
-          {/* Layer 1: PM filter */}
-          <motion.rect x={222} y={110} width={14} height={28}
-            initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ delay: 0.1 }}
-            fill="#78909C" opacity={0.9} />
-          {/* Layer 2: Guard bed */}
-          <motion.rect x={242} y={110} width={14} height={28}
-            initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ delay: 0.2 }}
-            fill="#455A64" opacity={0.9} />
-          {/* Layer 3: AgX core */}
-          <motion.rect x={262} y={110} width={20} height={28}
-            initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ delay: 0.3 }}
-            fill="#43A047" opacity={0.95} filter="url(#glow)" />
-          <text x={272} y={130} textAnchor="middle" fontSize={5} fill="white" fontWeight={700}>AgX</text>
-        </>
-      )}
-
-      {/* ── DIRTY AIR PARTICLES ENTERING (step 0 + 1) ── */}
-      {(step === 0 || step === 1) && [0,1,2,3,4,5,6,7].map(i => (
-        <motion.circle key={i}
-          r={3 + (i%3)}
-          fill={['#FF6B35','#FF8C42','#E64A19'][i%3]}
-          initial={{ cx: 60, cy: 115 + (i%5)*4 - 8 }}
-          animate={{ cx: step === 0 ? 165 : 220, cy: 115 + (i%5)*4 - 8 }}
-          transition={{ duration: 1.2, repeat: Infinity, delay: i*0.15, ease: 'linear' }}
-          opacity={0.85}
-        />
-      ))}
-
-      {/* ── CLEAN AIR PARTICLES EXITING (step 2+) ── */}
-      {step >= 2 && [0,1,2,3,4,5].map(i => (
-        <motion.circle key={i}
-          r={3}
-          fill={['#43A047','#66BB6A','#81C784'][i%3]}
-          initial={{ cx: 440, cy: 115 + (i%4)*5 - 8 }}
-          animate={{ cx: 540, cy: 115 + (i%4)*5 - 8 }}
-          transition={{ duration: 1.4, repeat: Infinity, delay: i*0.2, ease: 'linear' }}
-          opacity={0.8}
-        />
-      ))}
-
-      {/* ── TRAPPED NOₓ DOTS IN FILTER (step 2) ── */}
-      {step === 2 && [0,1,2,3,4].map(i => (
-        <motion.circle key={i}
-          cx={272} cy={114 + i*4}
-          r={2}
-          fill="#FF6B35"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.9 }}
-          transition={{ delay: i*0.1, duration: 0.4 }}
-        />
-      ))}
-
-      {/* ── DEPOT REGENERATION (step 3) ── */}
-      {step === 3 && (
-        <>
-          {/* Heat waves */}
-          {[0,1,2].map(i => (
-            <motion.path key={i}
-              d={`M ${258+i*8} 140 Q ${262+i*8} 148 ${258+i*8} 156`}
-              stroke="#FF6B35" strokeWidth={2} fill="none"
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: [0,1,0], y: -15 }}
-              transition={{ duration: 1, repeat: Infinity, delay: i*0.3 }}
-            />
-          ))}
-          {/* Power plug icon */}
-          <circle cx={272} cy={80} r={16} fill="#FFC107" opacity={0.9} />
-          <text x={272} y={85} textAnchor="middle" fontSize={14}>⚡</text>
-          <text x={272} y={100} textAnchor="middle" fontSize={8} fill="#FFC107" fontWeight={700}>0.28 kWh</text>
-        </>
-      )}
-
-      {/* ── STEP LABELS ── */}
-      <text x={122} y={100} textAnchor="middle" fontSize={9} fill="#FF6B35" fontWeight={600} fontFamily="Inter, sans-serif">
-        {step === 0 ? 'NOₓ in city air' : step === 3 ? 'Depot charging' : ''}
-      </text>
-      <text x={475} y={100} textAnchor="middle" fontSize={9} fill={step >= 2 ? '#43A047' : '#8A9BB0'} fontWeight={600} fontFamily="Inter, sans-serif">
-        {step >= 2 ? 'Clean air out' : ''}
-      </text>
-
-      {/* ── STAT OVERLAY ── */}
-      <rect x={10} y={10} width={130} height={50} rx={6} fill="rgba(26,32,50,0.85)" />
-      <text x={20} y={28} fontSize={8} fill="rgba(255,255,255,0.7)" fontFamily="Inter, sans-serif">NOₓ Upstream</text>
-      <text x={20} y={42} fontSize={13} fill="#FF6B35" fontWeight={800} fontFamily="monospace">162 µg/m³</text>
-      <text x={20} y={52} fontSize={7} fill="rgba(255,255,255,0.5)" fontFamily="Inter, sans-serif">6.5× WHO limit</text>
-
-      {step >= 2 && (
-        <motion.g initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.5 }}>
-          <rect x={460} y={10} width={130} height={50} rx={6} fill="rgba(26,32,50,0.85)" />
-          <text x={470} y={28} fontSize={8} fill="rgba(255,255,255,0.7)" fontFamily="Inter, sans-serif">NOₓ Downstream</text>
-          <text x={470} y={42} fontSize={13} fill="#43A047" fontWeight={800} fontFamily="monospace">29 µg/m³</text>
-          <text x={470} y={52} fontSize={7} fill="rgba(255,255,255,0.5)" fontFamily="Inter, sans-serif">82% captured ✓</text>
-        </motion.g>
-      )}
-    </svg>
-  )
-}
-
 // ─── STEP DATA ────────────────────────────────────────────────────────────────
 const STEPS = [
   {
@@ -346,12 +175,20 @@ export default function SystemExplainer() {
             </motion.div>
           </AnimatePresence>
 
-          {/* RIGHT: 3D bus animation */}
+          {/* RIGHT: Real Baku bus photo with animated overlays */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.2 }}
-            style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', padding: '1.5rem', boxShadow: 'var(--shadow-md)', overflow: 'hidden' }}
+            style={{
+              background: 'var(--bg-elevated)',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--border)',
+              padding: '1.5rem',
+              boxShadow: 'var(--shadow-md)',
+              overflow: 'hidden',
+              position: 'relative',
+            }}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -360,12 +197,204 @@ export default function SystemExplainer() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
+                style={{ position: 'relative' }}
               >
-                <BusCrossSection step={activeStep} />
+                {/* ── REAL BAKU BUS PHOTO ── */}
+                <img
+                  src="/hero-bus.png"
+                  alt="Baku AeroMesh Bus"
+                  style={{
+                    width: '100%',
+                    maxWidth: 520,
+                    objectFit: 'contain',
+                    display: 'block',
+                    margin: '0 auto',
+                    filter: 'none',           // natural colors — no tinting whatsoever
+                  }}
+                />
+
+                {/* ── AEROMESH MODULE HIGHLIGHT ON BUS ROOF ── */}
+                {/* Adjust top/left/width percentages to match the roof position
+                    in the actual hero-bus.png photo */}
+                <motion.div
+                  animate={{
+                    opacity: [0.6, 1, 0.6],
+                    boxShadow: [
+                      '0 0 8px rgba(27,79,138,0.4)',
+                      '0 0 20px rgba(27,79,138,0.8)',
+                      '0 0 8px rgba(27,79,138,0.4)',
+                    ]
+                  }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{
+                    position: 'absolute',
+                    top: '6%',       /* ← adjust to sit on bus roof */
+                    left: '18%',     /* ← adjust to start at front of roof */
+                    width: '58%',    /* ← adjust to span full roof length */
+                    height: '9%',    /* ← adjust to match roof height */
+                    background: 'rgba(27, 79, 138, 0.35)',
+                    border: '2px solid #1B4F8A',
+                    borderRadius: 4,
+                  }}
+                />
+
+                {/* ── STEP-SPECIFIC ANIMATED OVERLAY ── */}
+                {/* Step 0: orange NOₓ particles entering from the left */}
+                {activeStep === 0 && [0,1,2,3,4,5].map(i => (
+                  <motion.div key={i}
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: `${28 + i * 7}%`,
+                      width: 9, height: 9,
+                      borderRadius: '50%',
+                      background: ['#FF6B35','#FF8C42','#E64A19'][i % 3],
+                    }}
+                    animate={{ x: ['0%', '30%'], opacity: [0.9, 0] }}
+                    transition={{ duration: 1.3, repeat: Infinity, delay: i * 0.22, ease: 'easeIn' }}
+                  />
+                ))}
+
+                {/* Step 2: green clean air particles exiting from the right */}
+                {activeStep === 2 && [0,1,2,3,4].map(i => (
+                  <motion.div key={i}
+                    style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: `${30 + i * 8}%`,
+                      width: 8, height: 8,
+                      borderRadius: '50%',
+                      background: ['#43A047','#66BB6A','#81C784'][i % 3],
+                    }}
+                    animate={{ x: ['0%', '40%'], opacity: [0, 0.8, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3, ease: 'easeOut' }}
+                  />
+                ))}
+
+                {/* Step 3: heat waves above the roof module */}
+                {activeStep === 3 && [0,1,2].map(i => (
+                  <motion.div key={i}
+                    style={{
+                      position: 'absolute',
+                      top: '0%',
+                      left: `${30 + i * 10}%`,
+                      width: 3,
+                      background: 'linear-gradient(to top, #FF6B35, transparent)',
+                      height: 24,
+                      borderRadius: 2,
+                    }}
+                    animate={{ y: [0, -14], opacity: [0.8, 0] }}
+                    transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.35, ease: 'easeOut' }}
+                  />
+                ))}
+
+                {/* ── FLOATING LABELS ── */}
+                {/* Label 1: AeroMesh PNA Module */}
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.4 }}
+                  style={{
+                    position: 'absolute',
+                    top: '-2%',
+                    left: '20%',
+                    background: '#1B4F8A',
+                    color: 'white',
+                    fontSize: '0.62rem',
+                    fontWeight: 700,
+                    padding: '3px 8px',
+                    borderRadius: 4,
+                    fontFamily: 'var(--font-mono)',
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+                    zIndex: 2,
+                  }}
+                >
+                  AeroMesh PNA Module
+                </motion.div>
+
+                {/* Label 2: AgX Zeolite Core */}
+                <motion.div
+                  initial={{ opacity: 0, x: 8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.9, duration: 0.4 }}
+                  style={{
+                    position: 'absolute',
+                    top: '10%',
+                    right: '2%',
+                    background: '#2E7D32',
+                    color: 'white',
+                    fontSize: '0.62rem',
+                    fontWeight: 700,
+                    padding: '3px 8px',
+                    borderRadius: 4,
+                    fontFamily: 'var(--font-mono)',
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+                    zIndex: 2,
+                  }}
+                >
+                  AgX Zeolite Core
+                </motion.div>
+
+                {/* Label 3: ESP32 IoT Node */}
+                <motion.div
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.2, duration: 0.4 }}
+                  style={{
+                    position: 'absolute',
+                    top: '20%',
+                    left: '2%',
+                    background: '#6A1B9A',
+                    color: 'white',
+                    fontSize: '0.62rem',
+                    fontWeight: 700,
+                    padding: '3px 8px',
+                    borderRadius: 4,
+                    fontFamily: 'var(--font-mono)',
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+                    zIndex: 2,
+                  }}
+                >
+                  ESP32 IoT Node
+                </motion.div>
+
+                {/* Step stat overlay — bottom right of image */}
+                <motion.div
+                  key={`stat-${activeStep}`}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35 }}
+                  style={{
+                    position: 'absolute',
+                    bottom: 8,
+                    right: 8,
+                    background: `${STEPS[activeStep].color}EE`,
+                    color: 'white',
+                    padding: '6px 10px',
+                    borderRadius: 6,
+                    fontSize: '0.7rem',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    zIndex: 2,
+                  }}
+                >
+                  {STEPS[activeStep].stat.value} — {STEPS[activeStep].stat.label}
+                </motion.div>
+
               </motion.div>
             </AnimatePresence>
-            <div style={{ textAlign: 'center', marginTop: 8, fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              AeroMesh PNA — Animated System Cross-Section
+
+            <div style={{
+              textAlign: 'center',
+              marginTop: 10,
+              fontSize: '0.68rem',
+              color: 'var(--text-muted)',
+              fontFamily: 'var(--font-mono)',
+            }}>
+              AeroMesh PNA — Live on BakuBus Fleet
             </div>
           </motion.div>
 
