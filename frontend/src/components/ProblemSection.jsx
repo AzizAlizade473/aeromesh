@@ -9,7 +9,11 @@ export default function ProblemSection() {
   const toxLevel = useCountUp(inView ? 187 : 0, 2500);
 
   return (
-    <section id="problem" ref={ref} style={{ minHeight: '100vh', padding: '100px 20px', background: 'var(--bg-surface)' }}>
+    <section id="problem" ref={ref} style={{ 
+      minHeight: '100vh', 
+      padding: '100px 20px', 
+      background: 'linear-gradient(to bottom, var(--bg-dark) 0%, var(--bg-surface) 12%, var(--bg-surface) 100%)' 
+    }}>
       <div className="section-container">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={TRANSITION} style={{ textAlign: 'center', marginBottom: '60px' }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px, 3.5vw, 36px)', color: 'var(--text-primary)', fontWeight: 700 }}>
