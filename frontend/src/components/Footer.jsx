@@ -10,7 +10,7 @@ export default function Footer() {
   };
 
   const navLinks = {
-    'how-it-works': 'How It Works',
+    'problem':      'How It Works',
     'dashboard':    'Dashboard',
     'science':      'Science',
     'business':     'Economics',

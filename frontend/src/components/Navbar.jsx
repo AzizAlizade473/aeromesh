@@ -4,7 +4,7 @@ import { Menu, X } from 'lucide-react';
 import useScrollSpy from '../hooks/useScrollSpy';
 
 const NAV_LINKS = [
-  { id: 'how-it-works', label: 'How It Works' },
+  { id: 'problem',      label: 'How It Works' },
   { id: 'dashboard',    label: 'Dashboard' },
   { id: 'chemistry',    label: 'Chemistry' },
   { id: 'science',      label: 'Science' },

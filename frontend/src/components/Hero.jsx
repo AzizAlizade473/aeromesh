@@ -110,7 +110,7 @@ export default function Hero() {
               transition={{ ...TRANSITION, delay: 1 }}
               style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '3rem' }}
             >
-              <motion.button onClick={() => scrollTo('how-it-works')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}
+              <motion.button onClick={() => scrollTo('problem')} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}
                 style={{ padding: '14px 28px', border: 'none', background: 'white', color: 'var(--primary)', fontFamily: 'var(--font-display)', fontSize: '0.9rem', fontWeight: 700, borderRadius: 'var(--radius-sm)' }}>
                 How It Works
               </motion.button>
