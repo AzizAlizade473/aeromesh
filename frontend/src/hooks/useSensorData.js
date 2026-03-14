@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { API } from '../services/api';
 
 /**
  * useSensorData — Polls /api/sensors/all every 500ms for live NOₓ readings.
@@ -15,7 +16,7 @@ export default function useSensorData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('/api/sensors/all');
+        const res = await axios.get(API.sensors('all'));
         setReadings(res.data.readings || res.data);
         setError(null);
         setLoading(false);
