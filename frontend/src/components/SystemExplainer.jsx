@@ -83,7 +83,10 @@ export default function SystemExplainer() {
         </motion.div>
 
         {/* ── STEP PILLS ── */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: '2.5rem', flexWrap: 'wrap' }}>
+        <div
+          className="system-explainer-pills"
+          style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: '2rem', flexWrap: 'wrap' }}
+        >
           {STEPS.map((s, i) => (
             <motion.button
               key={i}
@@ -124,7 +127,10 @@ export default function SystemExplainer() {
         </div>
 
         {/* ── MAIN PANEL ── */}
-        <div className="main-panel" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: '2rem', alignItems: 'center' }}>
+        <div
+          className="system-explainer-grid main-panel"
+          style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: '2rem', alignItems: 'center' }}
+        >
 
           {/* LEFT: step info */}
           <AnimatePresence mode="wait">
@@ -153,13 +159,16 @@ export default function SystemExplainer() {
               </p>
 
               {/* Stat card */}
-              <div style={{ padding: '1.1rem 1.3rem', background: `${step.color}0E`, border: `1px solid ${step.color}30`, borderLeft: `4px solid ${step.color}`, borderRadius: 'var(--radius-md)' }}>
+              <div
+                className="stat-card"
+                style={{ padding: '1.1rem 1.3rem', background: `${step.color}0E`, border: `1px solid ${step.color}30`, borderLeft: `4px solid ${step.color}`, borderRadius: 'var(--radius-md)' }}
+              >
                 <div style={{ fontSize: '1.8rem', fontWeight: 900, color: step.color, fontFamily: 'var(--font-mono)', lineHeight: 1 }}>{step.stat.value}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>{step.stat.label}</div>
               </div>
 
               {/* Step progress dots */}
-              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <div className="progress-dots" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 {STEPS.map((s, i) => (
                   <motion.div
                     key={i}

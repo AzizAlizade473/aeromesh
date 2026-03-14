@@ -39,10 +39,15 @@ export default function SensorCharts() {
       <div style={{ background: 'var(--bg-dark-surface)', borderRadius: 'var(--radius-md)', padding: '20px', border: '1px solid rgba(255,255,255,0.1)', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1rem', color: 'white', fontFamily: 'var(--font-display)', fontWeight: 600 }}>Real-time NOₓ Differential</h3>
+            <h3
+              className="chart-title"
+              style={{ margin: 0, fontSize: '1rem', color: 'white', fontFamily: 'var(--font-display)', fontWeight: 600 }}
+            >
+              Real-time NOₓ Differential
+            </h3>
             <span style={{ fontSize: '0.7rem', color: 'var(--text-on-dark-muted)', fontFamily: 'var(--font-mono)' }}>FLEET AGGREGATE (µg/m³)</span>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div className="nox-chart-legend" style={{ display: 'flex', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <div style={{ width: 10, height: 10, background: '#EF4444', borderRadius: '2px' }}/>
               <span style={{ fontSize: '0.7rem', color: 'var(--text-on-dark-muted)', fontFamily: 'var(--font-mono)' }}>UPSTREAM</span>
@@ -55,22 +60,37 @@ export default function SensorCharts() {
         </div>
         
         <div style={{ flex: 1, minHeight: 0 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={historicalData} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
+          <div className="nox-chart-wrapper">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={historicalData} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
               <XAxis dataKey="time" stroke="rgba(255,255,255,0.3)" fontSize={10} tickMargin={8} minTickGap={30} />
-              <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} domain={[0, 'auto']} />
+              <YAxis
+                domain={[0, 250]}
+                tick={{ fontSize: 8, fill: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}
+                tickLine={false}
+                axisLine={false}
+                tickCount={4}
+                tickFormatter={v => `${v}`}
+                width={28}
+              />
               <Tooltip 
                 contentStyle={{ background: '#1A2332', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', color: 'white' }}
                 itemStyle={{ fontFamily: 'var(--font-mono)', fontSize: '12px' }}
                 labelStyle={{ color: 'var(--text-on-dark-muted)', marginBottom: '4px', fontSize: '10px' }}
               />
-              <ReferenceLine y={25} stroke="#FFC107" strokeDasharray="4 3" strokeWidth={1}
-                label={{ value: 'WHO 25µg', position: 'insideTopRight', fontSize: 8, fill: '#FFC107' }} />
+              <ReferenceLine
+                y={25}
+                stroke="#FFC107"
+                strokeDasharray="4 3"
+                strokeWidth={1}
+                label={{ value: 'WHO', position: 'insideTopRight', fontSize: 7, fill: '#FFC107', fontFamily: 'monospace' }}
+              />
               <Line type="monotone" dataKey="upstream" stroke="#EF4444" strokeWidth={2} dot={false} isAnimationActive={false} />
               <Line type="monotone" dataKey="downstream" stroke="#4ADE80" strokeWidth={2} dot={false} isAnimationActive={false} />
-            </LineChart>
-          </ResponsiveContainer>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 

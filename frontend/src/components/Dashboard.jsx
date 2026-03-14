@@ -25,7 +25,11 @@ export default function Dashboard() {
 
   return (
     <section id="dashboard" ref={ref} style={{ minHeight: '100vh', padding: '100px 20px 60px', background: 'var(--bg-dark)', color: 'var(--text-on-dark)' }}>
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
+      <motion.div
+        className="dashboard-header"
+        initial={{ opacity: 0, y: -20 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5 }}
         style={{
           position: 'sticky', top: '60px', zIndex: 100,
           background: 'var(--bg-dark-surface)', border: '1px solid rgba(255,255,255,0.1)',
@@ -53,8 +57,15 @@ export default function Dashboard() {
       <div className="section-container">
         <div className="dashboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
           <div className="dashboard-top" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
-            <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-md)', minHeight: '400px', border: '1px solid rgba(255,255,255,0.1)' }}><BakuMap /></div>
-            <div><SensorCharts /></div>
+            <div
+              className="baku-map-wrapper"
+              style={{ overflow: 'hidden', borderRadius: 'var(--radius-md)', minHeight: '400px', border: '1px solid rgba(255,255,255,0.1)' }}
+            >
+              <BakuMap />
+            </div>
+            <div className="sensor-charts-panel">
+              <SensorCharts />
+            </div>
           </div>
           <FleetAlertLog />
         </div>
