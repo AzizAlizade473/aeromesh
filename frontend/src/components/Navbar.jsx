@@ -54,7 +54,7 @@ export default function Navbar() {
         position: 'fixed',
         top: 0,
         width: '100%',
-        height: '60px',
+        height: 'var(--navbar-height, 60px)',
         zIndex: 1000,
           background: 'var(--color-surface)',
           borderBottom: '1px solid var(--color-border)',

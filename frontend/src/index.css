@@ -45,6 +45,9 @@
   --font-mono:       'JetBrains Mono', monospace;
   --font-az:         'Inter', sans-serif;
 
+  /* ── Layout ── */
+  --navbar-height: 60px;
+
   /* ── Spacing & Radius ── */
   --radius-sm:  4px;
   --radius-md:  8px;
@@ -210,6 +213,11 @@ input, textarea, select {
   background: var(--bg-void);
 }
 
+/* ── Map stacking context — keep controls below the navbar ────────── */
+.baku-map-wrapper {
+  z-index: 1;
+}
+
 /* ── Utility Classes ───────────────────────────────────────────────── */
 .section-container {
   max-width: 1200px;
@@ -333,6 +341,9 @@ footer .text-muted { color: var(--text-on-dark-muted); }
   /* Sections */
   section { padding: 3rem 1rem !important; }
 
+  /* Hero — clear the fixed navbar */
+  #hero { padding-top: var(--navbar-height) !important; }
+
   /* Hero — single column */
   .hero-grid { grid-template-columns: 1fr !important; }
   .hero-bus-col { display: none; }
@@ -403,7 +414,7 @@ footer .text-muted { color: var(--text-on-dark-muted); }
   transform: none;
 }
 @media (max-width: 768px) {
-  #how-it-works .main-panel { grid-template-columns: 1fr !important; }
+  #problem .main-panel { grid-template-columns: 1fr !important; }
   #business .kpi-strip { grid-template-columns: 1fr 1fr !important; }
   #business .model-grid { grid-template-columns: 1fr !important; }
 }

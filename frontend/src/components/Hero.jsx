@@ -39,7 +39,7 @@ export default function Hero() {
       display: 'flex',
       alignItems: 'center',
       overflow: 'hidden',
-      paddingTop: '60px',
+      paddingTop: 'var(--navbar-height, 60px)',
       background: 'var(--bg-dark)',
       color: 'var(--text-on-dark)',
     }}>
