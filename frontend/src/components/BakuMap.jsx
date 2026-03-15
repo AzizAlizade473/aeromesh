@@ -442,7 +442,7 @@ export default function BakuMap() {
         onClick={toggleFullscreen}
         title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen map'}
         style={{
-          position:'absolute', top:10, right:10, zIndex:1000,
+          position:'absolute', top:10, right:10, zIndex:500,
           background:'white', border:'1px solid var(--border)',
           borderRadius:6, padding:'6px 10px', cursor:'pointer',
           boxShadow:'var(--shadow-sm)', fontSize:'0.8rem',
@@ -454,7 +454,7 @@ export default function BakuMap() {
 
       {/* Legend Overlay */}
       <div style={{
-        position: 'absolute', bottom: 20, right: 20, zIndex: 1000,
+        position: 'absolute', bottom: 20, right: 20, zIndex: 500,
         background: 'white', padding: '12px', borderRadius: 'var(--radius-md)',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid var(--border)',
         fontFamily: 'var(--font-body)', fontSize: '0.75rem',
