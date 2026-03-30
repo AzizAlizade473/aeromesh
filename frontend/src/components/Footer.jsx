@@ -63,9 +63,13 @@ export default function Footer() {
         <div style={{ fontSize: '0.7rem', color: 'var(--text-on-dark-muted)', marginBottom: '6px' }}>AeroMesh PNA · WUF13 Hackathon · Baku 2026</div>
         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--accent-light)', marginBottom: '10px' }}>NO₂ + AgX(Zeolite) → [NO₂···Ag⁺]</div>
         <div style={{ fontSize: '0.75rem', color: 'var(--text-on-dark-muted)', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
-          Developed by <span style={{ color: 'white', fontWeight: 600 }}>Aziz Alizade</span> ·{' '}
+          Developed by <span style={{ color: 'white', fontWeight: 600 }}>Aziz Alizad</span> ·{' '}
           <a href="https://github.com/AzizAlizade473" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-light)', textDecoration: 'underline' }}>
             github.com/AzizAlizade473
+          </a>
+          <span style={{ color: 'white', fontWeight: 600 }}> and Muhammad Teymurlu </span> ·{' '}
+          <a href="https://github.com/Muhi2007" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-light)', textDecoration: 'underline' }}>
+            github.com/Muhi2007
           </a>
         </div>
       </div>
