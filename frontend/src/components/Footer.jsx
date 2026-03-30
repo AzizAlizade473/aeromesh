@@ -67,7 +67,7 @@ export default function Footer() {
           <a href="https://github.com/AzizAlizade473" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-light)', textDecoration: 'underline' }}>
             github.com/AzizAlizade473
           </a>
-          <span style={{ color: 'white', fontWeight: 600 }}> and Muhammad Teymurlu </span> ·{' '}
+          and <span style={{ color: 'white', fontWeight: 600 }}> Muhammad Teymurlu </span> ·{' '}
           <a href="https://github.com/Muhi2007" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-light)', textDecoration: 'underline' }}>
             github.com/Muhi2007
           </a>
