@@ -55,10 +55,7 @@ export default function Footer() {
                 <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>{item.v}</div>
               </div>
             ))}
-            <div style={{ marginTop: '8px' }}>
-              <div style={{ fontSize: '0.6rem', color: 'var(--text-on-dark-muted)', marginBottom: '2px', fontWeight: 600 }}>API</div>
-              <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: 'var(--accent-light)', textDecoration: 'underline' }}>http://localhost:8000/docs</a>
-            </div>
+            
           </div>
         </div>
       </div>
